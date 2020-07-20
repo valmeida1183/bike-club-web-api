@@ -13,10 +13,12 @@ namespace BikeClub.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.ApplyConfiguration(new RoleConfiguration());
-            //modelBuilder.ApplyConfigurationsFromAssembly(typeof(DataContext).Assembly);
+            //modelBuilder.ApplyConfiguration(new RoleConfiguration());
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(DataContext).Assembly);
         }
 
         public DbSet<Role> Roles { get; set; }
+        public DbSet<Gender> Genders { get; set; }
+        public DbSet<Difficulty> Difficulties { get; set;}
     }
 }

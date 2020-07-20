@@ -18,8 +18,19 @@ namespace BikeClub.Controllers
             return Ok(roles);
         }
 
+        [HttpGet("{name}")]
+        public async Task<ActionResult<Role>> GetByName(
+            string name, 
+            [FromServices] DataContext context)
+        {
+           var role = await context.Roles.AsNoTracking().FirstOrDefaultAsync(r => r.Name == name);
+           return Ok(role);
+        }
+
         [HttpPost]
-        public async Task<ActionResult<Role>> Post ([FromBody] Role model, [FromServices] DataContext context)
+        public async Task<ActionResult<Role>> Post (
+            [FromBody] Role model, 
+            [FromServices] DataContext context)
         {
             if (!ModelState.IsValid)
             {
@@ -40,7 +51,10 @@ namespace BikeClub.Controllers
         }
 
         [HttpPut("{name}")]
-        public async Task<ActionResult<Role>> Put (string name, [FromBody] Role model, [FromServices] DataContext context)
+        public async Task<ActionResult<Role>> Put (
+            string name, 
+            [FromBody] Role model, 
+            [FromServices] DataContext context)
         {
             if (!name.Equals(model.Name, StringComparison.OrdinalIgnoreCase))
             {
@@ -67,7 +81,6 @@ namespace BikeClub.Controllers
             {
                 return BadRequest(new { message = "Cannot update a role." });
             }
-
         }
     }
 }
