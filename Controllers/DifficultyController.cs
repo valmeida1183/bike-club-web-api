@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using BikeClub.Data;
 using BikeClub.Models;
+using BikeClub.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -35,21 +36,16 @@ namespace BikeClub.Controllers
             }            
 
             try
-            {
-                if (await context.Difficulties.AnyAsync(d => d.Id == model.Id))
-                {
-                    return Conflict(new { message = $"Difficulty with Id: {model.Id} already exists." });
-                }
-
+            {         
                 context.Difficulties.Add(model);
                 await context.SaveChangesAsync();
 
                 return Ok(model);
             }
-            catch
+            catch(System.Exception ex)
             {                
-                return BadRequest(new { message = "Cannot create a difficulty." });
-            }
+               return ExceptionHandlerService.HandleException(ex);
+            }            
         }
 
         [HttpPut("{id:int}")]
@@ -58,7 +54,7 @@ namespace BikeClub.Controllers
             [FromBody] Difficulty model, 
             [FromServices] DataContext context)
         {
-           if (id != model.Id)
+            if (id != model.Id)
             {
                 return BadRequest("Cannot change Id of Difficulty");
             }
@@ -75,14 +71,10 @@ namespace BikeClub.Controllers
                 await context.SaveChangesAsync();
                 return Ok(model); 
             }
-            catch (DbUpdateConcurrencyException)
+            catch(System.Exception ex)
             {                
-                return BadRequest(new { message = "Difficulty is already updated." });
-            }
-            catch
-            {
-                return BadRequest(new { message = "Cannot update a Difficulty." });
-            } 
+               return ExceptionHandlerService.HandleException(ex);
+            }    
         }
 
         [HttpDelete("{id:int}")]
@@ -102,10 +94,10 @@ namespace BikeClub.Controllers
                 await context.SaveChangesAsync();
                 return Ok(new { message = "Difficulty removed with success." });
             }
-            catch
-            {
-                return BadRequest(new { message = "Cannot remove difficulty." });
-            }
+            catch(System.Exception ex)
+            {                
+               return ExceptionHandlerService.HandleException(ex);
+            }   
         }
     }
 }

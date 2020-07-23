@@ -17,8 +17,10 @@ namespace BikeClub.Data
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(DataContext).Assembly);
         }
 
-        public DbSet<Role> Roles { get; set; }
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<Difficulty> Difficulties { get; set; }
         public DbSet<Gender> Genders { get; set; }
-        public DbSet<Difficulty> Difficulties { get; set;}
+        public DbSet<Role> Roles { get; set; }   
+        
     }
 }
