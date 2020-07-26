@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "K4cZNU4izCCG+rypUbWalTgfIHYAtGlRgJDghii2Lf03Slls/ZfbvSF/lcbS2bDeo0TgnDsnB5qWk3sXyP9sDQ==",
+  "dgSpecHash": "I+Qf8IInEuD3FrVNln5ST8CqkeJzAd5JxWHbNjPJGHhg56NaMrksw29yiNNwKJZm4hXxlm7LN3H8tBT3D54gCw==",
   "success": true,
   "projectFilePath": "D:\\TI\\Projetos\\BikeClub\\Project\\bike-club-api\\bike-club-api.csproj",
   "expectedPackageFiles": [
@@ -13,6 +13,8 @@
     "C:\\Users\\termo\\.nuget\\packages\\microsoft.entityframeworkcore.abstractions\\3.1.6\\microsoft.entityframeworkcore.abstractions.3.1.6.nupkg.sha512",
     "C:\\Users\\termo\\.nuget\\packages\\microsoft.entityframeworkcore.analyzers\\3.1.6\\microsoft.entityframeworkcore.analyzers.3.1.6.nupkg.sha512",
     "C:\\Users\\termo\\.nuget\\packages\\microsoft.entityframeworkcore.inmemory\\3.1.6\\microsoft.entityframeworkcore.inmemory.3.1.6.nupkg.sha512",
+    "C:\\Users\\termo\\.nuget\\packages\\microsoft.entityframeworkcore.relational\\3.1.6\\microsoft.entityframeworkcore.relational.3.1.6.nupkg.sha512",
+    "C:\\Users\\termo\\.nuget\\packages\\microsoft.entityframeworkcore.sqlserver\\3.1.6\\microsoft.entityframeworkcore.sqlserver.3.1.6.nupkg.sha512",
     "C:\\Users\\termo\\.nuget\\packages\\microsoft.extensions.caching.abstractions\\3.1.6\\microsoft.extensions.caching.abstractions.3.1.6.nupkg.sha512",
     "C:\\Users\\termo\\.nuget\\packages\\microsoft.extensions.caching.memory\\3.1.6\\microsoft.extensions.caching.memory.3.1.6.nupkg.sha512",
     "C:\\Users\\termo\\.nuget\\packages\\microsoft.extensions.configuration\\3.1.6\\microsoft.extensions.configuration.3.1.6.nupkg.sha512",

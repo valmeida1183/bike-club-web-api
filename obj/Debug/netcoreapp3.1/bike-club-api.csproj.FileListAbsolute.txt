@@ -61,3 +61,5 @@ D:\TI\Projetos\BikeClub\Project\bike-club-api\bin\Debug\netcoreapp3.1\runtimes\w
 D:\TI\Projetos\BikeClub\Project\bike-club-api\bin\Debug\netcoreapp3.1\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.pdb
 D:\TI\Projetos\BikeClub\Project\bike-club-api\bin\Debug\netcoreapp3.1\runtimes\win\lib\netstandard2.0\System.Runtime.Caching.dll
 D:\TI\Projetos\BikeClub\Project\bike-club-api\bin\Debug\netcoreapp3.1\runtimes\win\lib\netstandard2.0\System.Security.Cryptography.ProtectedData.dll
+D:\TI\Projetos\BikeClub\Project\bike-club-api\bin\Debug\netcoreapp3.1\Microsoft.EntityFrameworkCore.Relational.dll
+D:\TI\Projetos\BikeClub\Project\bike-club-api\bin\Debug\netcoreapp3.1\Microsoft.EntityFrameworkCore.SqlServer.dll

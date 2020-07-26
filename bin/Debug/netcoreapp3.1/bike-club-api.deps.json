@@ -26,6 +26,7 @@
         "dependencies": {
           "Microsoft.Data.SqlClient": "2.0.0",
           "Microsoft.EntityFrameworkCore.InMemory": "3.1.6",
+          "Microsoft.EntityFrameworkCore.SqlServer": "3.1.6",
           "Microsoft.AspNetCore.Antiforgery": "3.1.0.0",
           "Microsoft.AspNetCore.Authentication.Abstractions": "3.1.0.0",
           "Microsoft.AspNetCore.Authentication.Cookies": "3.1.0.0",
@@ -454,6 +455,35 @@
         },
         "compile": {
           "lib/netstandard2.0/Microsoft.EntityFrameworkCore.InMemory.dll": {}
+        }
+      },
+      "Microsoft.EntityFrameworkCore.Relational/3.1.6": {
+        "dependencies": {
+          "Microsoft.EntityFrameworkCore": "3.1.6"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Microsoft.EntityFrameworkCore.Relational.dll": {
+            "assemblyVersion": "3.1.6.0",
+            "fileVersion": "3.100.620.31702"
+          }
+        },
+        "compile": {
+          "lib/netstandard2.0/Microsoft.EntityFrameworkCore.Relational.dll": {}
+        }
+      },
+      "Microsoft.EntityFrameworkCore.SqlServer/3.1.6": {
+        "dependencies": {
+          "Microsoft.Data.SqlClient": "2.0.0",
+          "Microsoft.EntityFrameworkCore.Relational": "3.1.6"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Microsoft.EntityFrameworkCore.SqlServer.dll": {
+            "assemblyVersion": "3.1.6.0",
+            "fileVersion": "3.100.620.31702"
+          }
+        },
+        "compile": {
+          "lib/netstandard2.0/Microsoft.EntityFrameworkCore.SqlServer.dll": {}
         }
       },
       "Microsoft.Extensions.Caching.Abstractions/3.1.6": {
@@ -3073,6 +3103,20 @@
       "sha512": "sha512-UhoG//6kIno3DYHu2EG/WrLpq+n/em32sEehDEcCY22HvXDWdk7anZ0iKiVyCSe846taZTlTqqrqcR6eqrrARA==",
       "path": "microsoft.entityframeworkcore.inmemory/3.1.6",
       "hashPath": "microsoft.entityframeworkcore.inmemory.3.1.6.nupkg.sha512"
+    },
+    "Microsoft.EntityFrameworkCore.Relational/3.1.6": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-HDUAQzGplNfK3J9cUMn6kOeFZvWizYOp4ScqZ5R6TpmHxLR6TAzGItqa+5T0v+Nh5gQpRGOrSjyHk3EJJH4fvQ==",
+      "path": "microsoft.entityframeworkcore.relational/3.1.6",
+      "hashPath": "microsoft.entityframeworkcore.relational.3.1.6.nupkg.sha512"
+    },
+    "Microsoft.EntityFrameworkCore.SqlServer/3.1.6": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-7F683uiFUYLKshVBXuSK+CFWhAeBBR7PJ6DOdu1NOvemrfn06pFtfDCFFCB/k77PH02xXwDwssHcJ9FBfTEBLw==",
+      "path": "microsoft.entityframeworkcore.sqlserver/3.1.6",
+      "hashPath": "microsoft.entityframeworkcore.sqlserver.3.1.6.nupkg.sha512"
     },
     "Microsoft.Extensions.Caching.Abstractions/3.1.6": {
       "type": "package",

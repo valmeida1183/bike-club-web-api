@@ -33,6 +33,6 @@ namespace BikeClub.Models
         public string RoleName { get; set; }
         public virtual ICollection<TourParticipant> TourParticipants { get; set; }
         public virtual Role Role { get; set; }
-        public virtual Gender gender {get; set;}
+        public virtual Gender Gender {get; set;}
     }
 }

@@ -11,24 +11,29 @@ namespace BikeClub.Controllers
     [Route("v1/difficulties")]
     public class DifficultyController : ControllerBase
     {
+        private readonly DataContext context;
+
+        public DifficultyController(DataContext context)
+        {
+            this.context = context;
+        }
+
         [HttpGet]
-        public async Task<ActionResult<List<Difficulty>>> Get([FromServices] DataContext context)
+        public async Task<ActionResult<List<Difficulty>>> Get()
         {
             var difficulties = await context.Difficulties.AsNoTracking().ToListAsync();
             return Ok(difficulties);
         }
 
         [HttpGet("{id:int}")]
-        public async Task<ActionResult<Difficulty>> GetById(int id, [FromServices] DataContext context)
+        public async Task<ActionResult<Difficulty>> GetById(int id)
         {
             var difficulty = await context.Difficulties.AsNoTracking().FirstOrDefaultAsync(d => d.Id == id);
             return Ok(difficulty);
         }
 
         [HttpPost]
-        public async Task<ActionResult<Difficulty>> Post(
-            [FromBody] Difficulty model, 
-            [FromServices] DataContext context)
+        public async Task<ActionResult<Difficulty>> Post([FromBody] Difficulty model)
         {
             if (!ModelState.IsValid)
             {
@@ -51,8 +56,7 @@ namespace BikeClub.Controllers
         [HttpPut("{id:int}")]
         public async Task<ActionResult<Difficulty>> Put(
             int id, 
-            [FromBody] Difficulty model, 
-            [FromServices] DataContext context)
+            [FromBody] Difficulty model)
         {
             if (id != model.Id)
             {
@@ -78,9 +82,7 @@ namespace BikeClub.Controllers
         }
 
         [HttpDelete("{id:int}")]
-        public async Task<ActionResult<Difficulty>> Delete (
-            int id, 
-            [FromServices] DataContext context)
+        public async Task<ActionResult<Difficulty>> Delete (int id)
         {
             var difficulty = await context.Difficulties.FirstOrDefaultAsync(x => x.Id == id);
             if (difficulty == null)

@@ -11,9 +11,7 @@ namespace BikeClub.Services
         public const int SqlServerViolationOfUniqueConstraint = 2627;
 
         public static ObjectResult HandleException(Exception exception) 
-        {
-            var x = exception.GetType();
-
+        {   
             switch (exception)
             {
                 case DbUpdateConcurrencyException dbUpdateConcurrencyEx:

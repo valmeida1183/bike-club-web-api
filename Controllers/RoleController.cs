@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using BikeClub.Data;
 using BikeClub.Models;
+using BikeClub.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,8 +12,15 @@ namespace BikeClub.Controllers
     [Route("v1/roles")]
     public class RoleController : ControllerBase
     {
+        private readonly DataContext context;
+
+        public RoleController(DataContext context)
+        {
+            this.context = context;
+        }
+
         [HttpGet]
-        public async Task<ActionResult<List<Role>>> Get([FromServices] DataContext context)
+        public async Task<ActionResult<List<Role>>> Get()
         {
             var roles = await context.Roles.AsNoTracking().ToListAsync();
             return Ok(roles);
@@ -20,8 +28,7 @@ namespace BikeClub.Controllers
 
         [HttpGet("{name}")]
         public async Task<ActionResult<Role>> GetByName(
-            string name, 
-            [FromServices] DataContext context)
+            string name)
         {
            var role = await context.Roles.AsNoTracking().FirstOrDefaultAsync(r => r.Name == name);
            return Ok(role);
@@ -29,8 +36,7 @@ namespace BikeClub.Controllers
 
         [HttpPost]
         public async Task<ActionResult<Role>> Post (
-            [FromBody] Role model, 
-            [FromServices] DataContext context)
+            [FromBody] Role model)
         {
             if (!ModelState.IsValid)
             {
@@ -44,17 +50,16 @@ namespace BikeClub.Controllers
 
                 return Ok(model);
             }
-            catch
+            catch (System.Exception ex)
             {                
-                return BadRequest(new { message = "Cannot create a role." });
-            }            
+               return ExceptionHandlerService.HandleException(ex);
+            }       
         }
 
         [HttpPut("{name}")]
         public async Task<ActionResult<Role>> Put (
             string name, 
-            [FromBody] Role model, 
-            [FromServices] DataContext context)
+            [FromBody] Role model)
         {
             if (!name.Equals(model.Name, StringComparison.OrdinalIgnoreCase))
             {
@@ -73,13 +78,9 @@ namespace BikeClub.Controllers
                 await context.SaveChangesAsync();
                 return Ok(model); 
             }
-            catch (DbUpdateConcurrencyException)
+            catch (System.Exception ex)
             {                
-                return BadRequest(new { message = "Role is already updated." });
-            }
-            catch
-            {
-                return BadRequest(new { message = "Cannot update a role." });
+               return ExceptionHandlerService.HandleException(ex);
             }
         }
     }

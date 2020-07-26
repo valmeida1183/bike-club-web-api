@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using BikeClub.Data;
 using BikeClub.Models;
+using BikeClub.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,8 +11,15 @@ namespace BikeClub.Controllers
     [Route("v1/genders")]
     public class GenderController : ControllerBase  
     {
+        private readonly DataContext context;
+
+        public GenderController(DataContext context)
+        {
+            this.context = context;
+        }
+
         [HttpGet]
-        public async Task<ActionResult<List<Gender>>> Get ([FromServices] DataContext context)
+        public async Task<ActionResult<List<Gender>>> Get ()
         {
             var genders = await context.Genders.AsNoTracking().ToListAsync();
             return Ok(genders);
@@ -19,11 +27,31 @@ namespace BikeClub.Controllers
 
         [HttpGet("{code}")]
         public async Task<ActionResult<Gender>> GetByCode (
-            string code, 
-            [FromServices] DataContext context)
+            string code)
         {
             var gender = await context.Genders.AsNoTracking().FirstOrDefaultAsync(g => g.Code == code);
             return Ok(gender);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<Gender>> Post ([FromBody] Gender model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }            
+
+            try
+            {         
+                context.Genders.Add(model);
+                await context.SaveChangesAsync();
+
+                return Ok(model);
+            }
+            catch(System.Exception ex)
+            {                
+               return ExceptionHandlerService.HandleException(ex);
+            }
         }
     }
 }

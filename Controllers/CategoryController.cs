@@ -11,15 +11,22 @@ namespace BikeClub.Controllers
     [Route("v1/categories")]
     public class CategoryController : ControllerBase 
     {
+        private readonly DataContext context;
+
+        public CategoryController(DataContext context)
+        {
+            this.context = context;
+        }
+
         [HttpGet]
-        public async Task<ActionResult<List<Category>>> Get([FromServices] DataContext context)
+        public async Task<ActionResult<List<Category>>> Get()
         {
             var categories = await context.Categories.AsNoTracking().ToListAsync();
             return Ok(categories);
         }
 
         [HttpGet("{id:int}")]
-        public async Task<ActionResult<Category>> GetById(int id, [FromServices] DataContext context)
+        public async Task<ActionResult<Category>> GetById(int id)
         {
             var category = await context.Categories.AsNoTracking().FirstOrDefaultAsync(c => c.Id == id);
             return Ok(category);
@@ -27,8 +34,7 @@ namespace BikeClub.Controllers
 
         [HttpPost]
         public async Task<ActionResult<Category>> Post(
-            [FromBody] Category model, 
-            [FromServices] DataContext context)
+            [FromBody] Category model)
         {
             if (!ModelState.IsValid)
             {
@@ -51,8 +57,7 @@ namespace BikeClub.Controllers
         [HttpPut("{id:int}")]
         public async Task<ActionResult<Category>> Put(
             int id, 
-            [FromBody] Category model, 
-            [FromServices] DataContext context)
+            [FromBody] Category model)
         {
             if (id != model.Id)
             {
@@ -77,10 +82,8 @@ namespace BikeClub.Controllers
             }
         }
 
-        [HttpDelete("id:int")]
-        public async Task<ActionResult<Category>> Delete(
-            int id, 
-            [FromServices] DataContext context)
+        [HttpDelete("{id:int}")]
+        public async Task<ActionResult<Category>> Delete(int id)
         {
             var category = await context.Categories.FirstOrDefaultAsync(c => c.Id == id);
             if (category == null)
