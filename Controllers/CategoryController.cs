@@ -61,7 +61,7 @@ namespace BikeClub.Controllers
         {
             if (id != model.Id)
             {
-                return BadRequest("Cannot change Id of Category");
+                return BadRequest(new { message = "Cannot change Id of Category"} );
             }
 
             if (!ModelState.IsValid)

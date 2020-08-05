@@ -24,7 +24,7 @@ namespace BikeClub.Models
 
         [Required(ErrorMessage = "{0} field is required")]
         [Display(Name = "Zip Code")]
-        [RegularExpression(@"^[0-9]{2}.[0-9]{3}-[0-9]{3}$", ErrorMessage="{0} field is not a valid Zip Code")]
-        public string ZipCode { get; set; }  
+        /*  [RegularExpression(@"^[0-9]{2}.[0-9]{3}-[0-9]{3}$", ErrorMessage="{0} field is not a valid Zip Code")] */
+        public int ZipCode { get; set; }  
     }
 }

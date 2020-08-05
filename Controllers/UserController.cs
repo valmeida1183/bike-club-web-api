@@ -27,11 +27,9 @@ namespace BikeClub.Controllers
         }
 
         [HttpGet("{id:int}")]
-        public async Task<ActionResult<User>> GetById(
-            int id, 
-            [FromServices] DataContext contex)
+        public async Task<ActionResult<User>> GetById(int id)
         {
-            var user = await contex.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == id);
+            var user = await context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == id);
             return Ok(user);
         }
 

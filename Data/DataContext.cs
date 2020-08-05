@@ -20,6 +20,7 @@ namespace BikeClub.Data
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(DataContext).Assembly);
         }
 
+        public DbSet<Address> Addresses { get; set;}
         public DbSet<Category> Categories { get; set; }
         public DbSet<Difficulty> Difficulties { get; set; }
         public DbSet<Gender> Genders { get; set; }
