@@ -13,7 +13,7 @@ namespace BikeClub.Models
         public int Gears { get; set; }
 
         [Required(ErrorMessage = "{0} field is required")]
-        [Range(13, 23, ErrorMessage = "{0} field must contain a value between {2} and {1}")]
+        [Range(13, 24, ErrorMessage = "{0} field must contain a value between {2} and {1}")]
         public decimal FrameSize { get; set; }
 
         [Required(ErrorMessage = "{0} field is required")]

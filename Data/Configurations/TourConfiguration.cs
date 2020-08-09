@@ -10,8 +10,10 @@ namespace BikeClub.Data.Configurations
         {
             builder.HasKey(t => t.Id);
             builder.Property(t => t.StartDate)
+                .HasColumnType("datetimeoffset")
                 .IsRequired();
             builder.Property(t => t.EndDate)
+                .HasColumnType("datetimeoffset")
                 .IsRequired();
             builder.Property(t => t.Description)
                 .HasMaxLength(300)

@@ -8,32 +8,32 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BikeClub.Controllers
 {
-    [Route("v1/addresses")]
-    public class AddressController: ControllerBase
+    [Route("v1/bikes")]
+    public class BikeController : ControllerBase
     {
         private readonly DataContext context;
 
-        public AddressController(DataContext context)
+        public BikeController(DataContext context)
         {
             this.context = context;
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<Address>>> Get()
+        public async Task<ActionResult<List<Bike>>> Get()
         {
-            var addresses = await context.Addresses.AsNoTracking().ToListAsync();
-            return Ok(addresses);
+            var bikes = await context.Bikes.AsNoTracking().ToListAsync();
+            return Ok(bikes);
         }
 
         [HttpGet("{id:int}")]
-        public async Task<ActionResult<Address>> GetById(int id)
+        public async Task<ActionResult<Bike>> GetById(int id)
         {
-            var address = await context.Addresses.AsNoTracking().FirstOrDefaultAsync(a => a.Id == id);
-            return Ok(address);
+            var bike = await context.Bikes.AsNoTracking().FirstOrDefaultAsync(b => b.Id == id);
+            return Ok(bike);
         }
 
         [HttpPost]
-        public async Task<ActionResult<Address>> Post([FromBody] Address model)
+        public async Task<ActionResult<Bike>> Post([FromBody] Bike model)
         {
             if (!ModelState.IsValid)
             {
@@ -42,7 +42,7 @@ namespace BikeClub.Controllers
 
             try
             {
-                context.Addresses.Add(model);
+                context.Bikes.Add(model);
                 await context.SaveChangesAsync();
 
                 return Ok(model);
@@ -54,11 +54,11 @@ namespace BikeClub.Controllers
         }
 
         [HttpPut("{id:int}")]
-        public async Task<ActionResult<Address>> Put(int id, [FromBody] Address model)
+        public async Task<ActionResult<Bike>> Put(int id, [FromBody] Bike model)
         {
             if (id != model.Id)
             {
-                return BadRequest(new { message = "Cannot change Id of Address."});
+                return BadRequest(new { message = "Cannot change Id of Bike."});
             }
 
             if (!ModelState.IsValid)
@@ -68,36 +68,35 @@ namespace BikeClub.Controllers
 
             try
             {
-                context.Entry<Address>(model).State = EntityState.Modified;
+                context.Entry<Bike>(model).State = EntityState.Modified;
                 await context.SaveChangesAsync();
 
                 return Ok(model);
             }
             catch (System.Exception ex)
-            {
+            {                
                 return ExceptionHandlerService.HandleException(ex);
             }
         }
 
         [HttpDelete("{id:int}")]
-        public async Task<ActionResult<Address>> Delete(int id)
+        public async Task<ActionResult<Bike>> Delete(int id)
         {
-            var address = await context.Addresses.FirstOrDefaultAsync(a => a.Id == id);
-            if (address == null)
+            var bike = await context.Bikes.FirstOrDefaultAsync(b => b.Id == id);
+            if (bike == null)
             {
-                return NotFound(new { message = "Address not found."});
+                return NotFound(new { message = "Bike not found."});
             }
 
             try
             {
-                context.Addresses.Remove(address);
+                context.Bikes.Remove(bike);
                 await context.SaveChangesAsync();
 
-                return Ok(new { message = "Address removed with success." });
-
+                return Ok(new { message = "Bike removed with success." }); 
             }
             catch (System.Exception ex)
-            {                
+            {
                 return ExceptionHandlerService.HandleException(ex);
             }
         }
