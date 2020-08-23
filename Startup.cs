@@ -30,7 +30,10 @@ namespace BikeClub
             services.AddControllers();
 
             // Config do EF com database em memória
-            services.AddDbContext<DataContext>(opt => opt.UseInMemoryDatabase("MyMemoryDatabase"));
+            //services.AddDbContext<DataContext>(opt => opt.UseInMemoryDatabase("MyMemoryDatabase"));
+
+            //Config do EF com databse real
+            services.AddDbContext<DataContext>(opt => opt.UseSqlServer(Configuration.GetConnectionString("connectionString")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -11,10 +11,12 @@ namespace BikeClub.Data.Configurations
             builder.HasKey(tp => new { tp.UserId, tp.TourId });
             builder.HasOne(tp => tp.User)
                 .WithMany(u => u.TourParticipants)
-                .HasForeignKey(tp => tp.UserId);
+                .HasForeignKey(tp => tp.UserId)
+                .OnDelete(DeleteBehavior.NoAction);
             builder.HasOne(tp => tp.Tour)
                 .WithMany(t => t.TourParticipants)
-                .HasForeignKey(tp => tp.TourId);
+                .HasForeignKey(tp => tp.TourId)
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

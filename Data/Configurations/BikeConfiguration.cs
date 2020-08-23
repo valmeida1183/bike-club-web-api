@@ -14,10 +14,10 @@ namespace BikeClub.Data.Configurations
                 .HasMaxLength(36)
                 .IsRequired();
             builder.Property(b => b.FrameSize)
-                .HasMaxLength(24)
+                .HasColumnType("decimal(3,1)")                
                 .IsRequired();
             builder.Property(b => b.RimSize)
-                .HasMaxLength(29)
+                .HasColumnType("decimal(3,1)")               
                 .IsRequired();
             builder.Property(b => b.Model)
                 .HasMaxLength(20)

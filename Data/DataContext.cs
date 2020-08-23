@@ -1,4 +1,5 @@
 using BikeClub.Data.Configurations;
+using BikeClub.Data.Seed.Extensions;
 using BikeClub.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,6 +19,9 @@ namespace BikeClub.Data
 
             // vai ler todos os arquivos que herdam de IEntityTypeConfiguration do assembly e registrá-los de uma única vez.
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(DataContext).Assembly);
+
+            //Seed do banco de dados
+            modelBuilder.Seed();
         }
 
         public DbSet<Address> Addresses { get; set; }

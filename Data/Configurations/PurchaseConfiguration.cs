@@ -13,10 +13,12 @@ namespace BikeClub.Data.Configurations
                 .IsRequired();
             builder.HasOne(p => p.ShopCart)
                 .WithMany(s => s.Purchases)
-                .HasForeignKey(p => p.ShopCartId);
+                .HasForeignKey(p => p.ShopCartId)
+                .OnDelete(DeleteBehavior.NoAction);
             builder.HasOne(p => p.Bike)
                 .WithMany(b => b.Purchases)
-                .HasForeignKey(p => p.BikeId);
+                .HasForeignKey(p => p.BikeId)
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }
