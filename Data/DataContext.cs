@@ -1,5 +1,5 @@
 using BikeClub.Data.Configurations;
-using BikeClub.Data.Seed.Extensions;
+using BikeClub.Data.Extensions;
 using BikeClub.Models;
 using Microsoft.EntityFrameworkCore;
 
