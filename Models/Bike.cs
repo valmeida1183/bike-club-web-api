@@ -31,8 +31,10 @@ namespace BikeClub.Models
         [Required(ErrorMessage = "{0} field is required")]
         [DataType(DataType.Currency)]
         [Range(0.0, Double.MaxValue, ErrorMessage = "{0} field must be greater than {1}")]
-        public decimal Price { get; set; }        
-        
+        public decimal Price { get; set; }
+
+        [Required(ErrorMessage = "{0} field is required")]
+        public string Image {get; set;} 
         public string GenderCode { get; set; }
         public int CategoryId { get; set; }
         public virtual ICollection<Purchase> Purchases { get; set; }

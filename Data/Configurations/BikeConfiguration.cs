@@ -28,6 +28,9 @@ namespace BikeClub.Data.Configurations
             builder.Property(b => b.Price)
                 .HasColumnType("money")
                 .IsRequired();
+            builder.Property(b => b.Image)
+                .HasMaxLength(50)
+                .IsRequired();
             builder.HasOne(b => b.Category)
                 .WithMany()
                 .HasForeignKey(b => b.CategoryId)

@@ -53,7 +53,7 @@ namespace BikeClub.Controllers
             }
         }
 
-        [HttpPut("{int:id}")]
+        [HttpPut("{id:int}")]
         public async Task<ActionResult<Tour>> Put(int id, [FromBody] Tour model)
         {
             if (id != model.Id)

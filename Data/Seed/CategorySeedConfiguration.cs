@@ -9,7 +9,7 @@ namespace BikeClub.Data.Seed
         {
             modelBuilder.Entity<Category>().HasData(
                 new Category { Id = 1, Name = "Road" },
-                new Category { Id = 2, Name = "Moutain" },
+                new Category { Id = 2, Name = "Mountain" },
                 new Category { Id = 3, Name = "Hybrid" },
                 new Category { Id = 4, Name = "Touring" },
                 new Category { Id = 5, Name = "Folding" },
