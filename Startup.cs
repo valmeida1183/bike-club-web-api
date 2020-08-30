@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -29,6 +30,15 @@ namespace BikeClub
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // Configura o Gzip e compacta todo o response que for do mimeType "application/json"
+            services.AddResponseCompression(opt =>
+            {
+                opt.EnableForHttps = true;
+                opt.Providers.Add<BrotliCompressionProvider>();
+                opt.MimeTypes = ResponseCompressionDefaults.MimeTypes
+                    .Concat(new[] { "application/json; charset=utf-8"});
+            });            
+
             services.AddControllers();
 
             // Config do EF com database em memória
@@ -45,6 +55,8 @@ namespace BikeClub
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseResponseCompression();
 
             // Condig para permitir a WEb api servir arquivos estáticos (ex: imagens) em uma pasta diferente de "wwwroot".
             app.UseStaticFiles(new StaticFileOptions
