@@ -63,7 +63,7 @@ namespace BikeClub.Controllers
         {
             if (id != model.Id)
             {
-                return BadRequest("Cannot change Id of User");
+                return BadRequest(new { message = "Cannot change Id of User."});
             }
 
             if (!ModelState.IsValid)

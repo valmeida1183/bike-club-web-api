@@ -12,6 +12,7 @@ namespace BikeClub.Data.Extensions
             GenderSeedConfiguration.Seed(modelBuilder);
             RoleSeedConfiguration.Seed(modelBuilder);
             BikeSeedConfiguration.Seed(modelBuilder);
+            UserSeedConfiguration.Seed(modelBuilder);
         }
     }
 }

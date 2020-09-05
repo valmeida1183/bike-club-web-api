@@ -10,23 +10,20 @@ namespace BikeClub.Data.Configurations
         {
             builder.HasKey(u => u.Id);
             builder.Property(u => u.Email)
-                .HasMaxLength(30)
+                .HasMaxLength(100)
                 .IsRequired();
-            builder.Property(u => u.Password)
-                .HasMaxLength(30)
+            builder.Property(u => u.Password) 
+                .HasMaxLength(8000)               
                 .IsRequired();
             builder.Property(u => u.Phone)
                 .HasMaxLength(20)
                 .IsRequired();
             builder.Property(u => u.Name)
-                .HasMaxLength(20)
+                .HasMaxLength(50)
                 .IsRequired();
             builder.Property(u => u.LastName)
-                .HasMaxLength(35)
+                .HasMaxLength(50)
                 .IsRequired();
-            builder.Property(u => u.LastName)
-                .HasMaxLength(35)
-                .IsRequired();            
             builder.HasOne(u => u.Gender)
                 .WithMany()
                 .HasForeignKey(u => u.GenderCode)

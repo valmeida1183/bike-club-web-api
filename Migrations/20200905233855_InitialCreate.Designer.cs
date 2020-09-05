@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace bike_club_api.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20200830010627_Seed")]
-    partial class Seed
+    [Migration("20200905233855_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -633,8 +633,8 @@ namespace bike_club_api.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(30)")
-                        .HasMaxLength(30);
+                        .HasColumnType("nvarchar(100)")
+                        .HasMaxLength(100);
 
                     b.Property<string>("GenderCode")
                         .IsRequired()
@@ -642,18 +642,18 @@ namespace bike_club_api.Migrations
 
                     b.Property<string>("LastName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(35)")
-                        .HasMaxLength(35);
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50);
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(20)")
-                        .HasMaxLength(20);
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50);
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasColumnType("nvarchar(30)")
-                        .HasMaxLength(30);
+                        .HasColumnType("nvarchar(max)")
+                        .HasMaxLength(8000);
 
                     b.Property<string>("Phone")
                         .IsRequired()
@@ -671,6 +671,19 @@ namespace bike_club_api.Migrations
                     b.HasIndex("RoleName");
 
                     b.ToTable("Users");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Email = "administrator@administrator.com",
+                            GenderCode = "M",
+                            LastName = "Master",
+                            Name = "Admin",
+                            Password = "1lFqy5Swsz77Zh/Us7s2uMNMW+Fwhjl8PyhcDR2cpoU=",
+                            Phone = "(99)99999-9999",
+                            RoleName = "Monitor"
+                        });
                 });
 
             modelBuilder.Entity("BikeClub.Models.Bike", b =>

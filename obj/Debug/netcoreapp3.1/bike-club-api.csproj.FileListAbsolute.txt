@@ -64,3 +64,4 @@ D:\TI\Projetos\BikeClub\Project\bike-club-api\bin\Debug\netcoreapp3.1\runtimes\w
 D:\TI\Projetos\BikeClub\Project\bike-club-api\bin\Debug\netcoreapp3.1\Microsoft.EntityFrameworkCore.Relational.dll
 D:\TI\Projetos\BikeClub\Project\bike-club-api\bin\Debug\netcoreapp3.1\Microsoft.EntityFrameworkCore.SqlServer.dll
 D:\TI\Projetos\BikeClub\Project\bike-club-api\bin\Debug\netcoreapp3.1\Microsoft.EntityFrameworkCore.Design.dll
+D:\TI\Projetos\BikeClub\Project\bike-club-api\bin\Debug\netcoreapp3.1\Microsoft.AspNetCore.Authentication.JwtBearer.dll
