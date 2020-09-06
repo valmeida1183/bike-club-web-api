@@ -18,6 +18,7 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 
 namespace BikeClub
 {
@@ -33,6 +34,9 @@ namespace BikeClub
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // adiciona o CORS
+            services.AddCors();
+
             // Configura o Brotli e compacta todo o response que for do mimeType "application/json"
             services.AddResponseCompression(opt =>
             {
@@ -43,6 +47,8 @@ namespace BikeClub
             });            
 
             services.AddControllers();
+
+            // Configs de Autenticação e Jwt
             var key = Encoding.ASCII.GetBytes(Settings.Secret);
             services.AddAuthentication(a => 
             {
@@ -66,6 +72,15 @@ namespace BikeClub
 
             //Config do EF com databse real
             services.AddDbContext<DataContext>(opt => opt.UseSqlServer(Configuration.GetConnectionString("connectionString")));
+
+            services.AddSwaggerGen(c => 
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo 
+                {
+                    Title = "Bike Club Api",
+                    Version = "v1"
+                });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -87,7 +102,19 @@ namespace BikeClub
 
             app.UseHttpsRedirection();
 
+            app.UseSwagger();
+            app.UseSwaggerUI(c => 
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Bike Club Api Version: 1");
+            });
+
             app.UseRouting();
+
+            app.UseCors(x => x
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+            );
 
             app.UseAuthentication();
             app.UseAuthorization();

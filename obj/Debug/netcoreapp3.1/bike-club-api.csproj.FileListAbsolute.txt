@@ -65,3 +65,8 @@ D:\TI\Projetos\BikeClub\Project\bike-club-api\bin\Debug\netcoreapp3.1\Microsoft.
 D:\TI\Projetos\BikeClub\Project\bike-club-api\bin\Debug\netcoreapp3.1\Microsoft.EntityFrameworkCore.SqlServer.dll
 D:\TI\Projetos\BikeClub\Project\bike-club-api\bin\Debug\netcoreapp3.1\Microsoft.EntityFrameworkCore.Design.dll
 D:\TI\Projetos\BikeClub\Project\bike-club-api\bin\Debug\netcoreapp3.1\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+D:\TI\Projetos\BikeClub\Project\bike-club-api\bin\Debug\netcoreapp3.1\Microsoft.OpenApi.dll
+D:\TI\Projetos\BikeClub\Project\bike-club-api\bin\Debug\netcoreapp3.1\Swashbuckle.AspNetCore.Swagger.dll
+D:\TI\Projetos\BikeClub\Project\bike-club-api\bin\Debug\netcoreapp3.1\Swashbuckle.AspNetCore.SwaggerGen.dll
+D:\TI\Projetos\BikeClub\Project\bike-club-api\bin\Debug\netcoreapp3.1\Swashbuckle.AspNetCore.SwaggerUI.dll
+D:\TI\Projetos\BikeClub\Project\bike-club-api\obj\Debug\netcoreapp3.1\bike-club-api.MvcApplicationPartsAssemblyInfo.cs
