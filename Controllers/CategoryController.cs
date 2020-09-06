@@ -22,6 +22,7 @@ namespace BikeClub.Controllers
         }
 
         [HttpGet]
+        [ResponseCache(VaryByHeader="User-Agent", Location = ResponseCacheLocation.Any, Duration = 30)]
         public async Task<ActionResult<List<Category>>> Get()
         {
             var categories = await context.Categories.AsNoTracking().ToListAsync();
