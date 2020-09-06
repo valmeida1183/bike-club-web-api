@@ -3,12 +3,15 @@ using System.Threading.Tasks;
 using BikeClub.Data;
 using BikeClub.Models;
 using BikeClub.Services;
+using BikeClub.Static;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace BikeClub.Controllers
 {
     [Route("v1/genders")]
+    [Authorize]
     public class GenderController : ControllerBase  
     {
         private readonly DataContext context;
@@ -34,6 +37,7 @@ namespace BikeClub.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = RoleStatic.Monitor)]
         public async Task<ActionResult<Gender>> Post ([FromBody] Gender model)
         {
             if (!ModelState.IsValid)

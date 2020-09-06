@@ -3,12 +3,15 @@ using System.Threading.Tasks;
 using BikeClub.Data;
 using BikeClub.Models;
 using BikeClub.Services;
+using BikeClub.Static;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace BikeClub.Controllers
 {
     [Route("v1/difficulties")]
+    [Authorize]
     public class DifficultyController : ControllerBase
     {
         private readonly DataContext context;
@@ -33,6 +36,7 @@ namespace BikeClub.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = RoleStatic.Monitor)]
         public async Task<ActionResult<Difficulty>> Post([FromBody] Difficulty model)
         {
             if (!ModelState.IsValid)
@@ -54,6 +58,7 @@ namespace BikeClub.Controllers
         }
 
         [HttpPut("{id:int}")]
+        [Authorize(Roles = RoleStatic.Monitor)]
         public async Task<ActionResult<Difficulty>> Put(
             int id, 
             [FromBody] Difficulty model)
@@ -82,6 +87,7 @@ namespace BikeClub.Controllers
         }
 
         [HttpDelete("{id:int}")]
+        [Authorize(Roles = RoleStatic.Monitor)]
         public async Task<ActionResult<Difficulty>> Delete (int id)
         {
             var difficulty = await context.Difficulties.FirstOrDefaultAsync(x => x.Id == id);

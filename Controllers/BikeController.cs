@@ -3,12 +3,15 @@ using System.Threading.Tasks;
 using BikeClub.Data;
 using BikeClub.Models;
 using BikeClub.Services;
+using BikeClub.Static;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace BikeClub.Controllers
 {
     [Route("v1/bikes")]
+    [Authorize]
     public class BikeController : ControllerBase
     {
         private readonly DataContext context;
@@ -33,6 +36,7 @@ namespace BikeClub.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = RoleStatic.Monitor)]
         public async Task<ActionResult<Bike>> Post([FromBody] Bike model)
         {
             if (!ModelState.IsValid)
@@ -54,6 +58,7 @@ namespace BikeClub.Controllers
         }
 
         [HttpPut("{id:int}")]
+        [Authorize(Roles = RoleStatic.Monitor)]
         public async Task<ActionResult<Bike>> Put(int id, [FromBody] Bike model)
         {
             if (id != model.Id)
@@ -80,6 +85,7 @@ namespace BikeClub.Controllers
         }
 
         [HttpDelete("{id:int}")]
+        [Authorize(Roles = RoleStatic.Monitor)]
         public async Task<ActionResult<Bike>> Delete(int id)
         {
             var bike = await context.Bikes.FirstOrDefaultAsync(b => b.Id == id);

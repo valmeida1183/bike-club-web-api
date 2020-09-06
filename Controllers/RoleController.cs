@@ -4,12 +4,15 @@ using System.Threading.Tasks;
 using BikeClub.Data;
 using BikeClub.Models;
 using BikeClub.Services;
+using BikeClub.Static;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace BikeClub.Controllers
 {
     [Route("v1/roles")]
+    [Authorize]
     public class RoleController : ControllerBase
     {
         private readonly DataContext context;
@@ -35,6 +38,7 @@ namespace BikeClub.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = RoleStatic.Monitor)]
         public async Task<ActionResult<Role>> Post (
             [FromBody] Role model)
         {
@@ -57,6 +61,7 @@ namespace BikeClub.Controllers
         }
 
         [HttpPut("{name}")]
+        [Authorize(Roles = RoleStatic.Monitor)]
         public async Task<ActionResult<Role>> Put (
             string name, 
             [FromBody] Role model)

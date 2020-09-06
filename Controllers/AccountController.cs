@@ -47,8 +47,7 @@ namespace BikeClub.Controllers
         [HttpPost("register")]
         [AllowAnonymous]
         public async Task<ActionResult<User>> Register([FromBody] User model) 
-        {
-            
+        {            
             if (!ModelState.IsValid)
             {
                return BadRequest(ModelState);

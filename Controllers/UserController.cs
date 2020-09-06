@@ -4,12 +4,14 @@ using BikeClub.Data;
 using BikeClub.Models;
 using BikeClub.Services;
 using BikeClub.Static;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace BikeClub.Controllers
 {
     [Route("v1/users")]
+    [Authorize]
     public class UserController : ControllerBase
     {
         private readonly DataContext context;
@@ -34,6 +36,7 @@ namespace BikeClub.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = RoleStatic.Monitor)]
         public async Task<ActionResult<User>> PostMonitor([FromBody] User model)
         {
             if (!ModelState.IsValid)
@@ -44,6 +47,7 @@ namespace BikeClub.Controllers
             try
             {
                 model.RoleName = RoleStatic.Monitor;
+                model.Password = CryptographerSerivce.Hash(model.Password);
 
                 context.Users.Add(model);
                 await context.SaveChangesAsync();
@@ -57,6 +61,7 @@ namespace BikeClub.Controllers
         }
 
         [HttpPut("{id:int}")]
+        [Authorize(Roles = RoleStatic.Monitor)]
         public async Task<ActionResult<User>> Put (
             int id, 
             [FromBody] User model)
