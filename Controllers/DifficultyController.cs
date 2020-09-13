@@ -22,6 +22,7 @@ namespace BikeClub.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         [ResponseCache(VaryByHeader="User-Agent", Location = ResponseCacheLocation.Any, Duration = 30)]
         public async Task<ActionResult<List<Difficulty>>> Get()
         {
@@ -30,6 +31,7 @@ namespace BikeClub.Controllers
         }
 
         [HttpGet("{id:int}")]
+        [AllowAnonymous]
         public async Task<ActionResult<Difficulty>> GetById(int id)
         {
             var difficulty = await context.Difficulties.AsNoTracking().FirstOrDefaultAsync(d => d.Id == id);
