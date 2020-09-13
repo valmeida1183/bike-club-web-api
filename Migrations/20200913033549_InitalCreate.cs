@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace bike_club_api.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class InitalCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -351,7 +351,7 @@ namespace bike_club_api.Migrations
                     { 9, 1, "The top of road bikes. Equipped with disc brakes, carbon fiber frame and thin tires.", 17.5m, 21, "M", "road2.png", "Scarlet Speed", 6100.90m, 29.0m },
                     { 8, 1, "Classic road model. Equipped with V-brake and aluminum frame.", 17.5m, 10, "M", "road1.png", "Orange Speed", 350.00m, 27.5m },
                     { 7, 2, "The top of mountain bikes. Equipped with RockShox front suspension, disc brakes, carbon fiber frame and Maxxis Minion tires.", 17.5m, 36, "M", "mountain6.png", "Scarlet Mountain", 5790.90m, 29.0m },
-                    { 6, 2, "Silver mountain's advanced model. Equipped with RockShox front suspension, disc brakes, carbon fiber frame.", 17.5m, 21, "M", "mountain6.png", "Silver Mountain II", 2390.90m, 29.0m },
+                    { 6, 2, "Silver mountain's advanced model. Equipped with RockShox front suspension, disc brakes, carbon fiber frame.", 17.5m, 21, "M", "mountain5.png", "Silver Mountain II", 2390.90m, 29.0m },
                     { 5, 4, "The classic bicycle for tours. Equipped with V-Brake brakes, aluminum frame, and rear and front load support.", 17.5m, 18, "M", "tour1.png", "Orange Tour", 380.90m, 27.5m },
                     { 4, 2, "The winter bike. Equipped with larger, non-slip special tires, disc brakes, aluminum frame.", 17.5m, 21, "M", "mountain4.png", "Snow Mountain", 1400.90m, 29.0m },
                     { 3, 3, "Advanced hybrid model. Equipped with front suspension, disc brakes, aluminum frame.", 17.5m, 21, "M", "mountain3.png", "Blue Sky", 1200.90m, 27.5m },

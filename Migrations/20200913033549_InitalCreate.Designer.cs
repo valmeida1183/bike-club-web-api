@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace bike_club_api.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20200905233855_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20200913033549_InitalCreate")]
+    partial class InitalCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -182,7 +182,7 @@ namespace bike_club_api.Migrations
                             FrameSize = 17.5m,
                             Gears = 21,
                             GenderCode = "M",
-                            Image = "mountain6.png",
+                            Image = "mountain5.png",
                             Model = "Silver Mountain II",
                             Price = 2390.90m,
                             RimSize = 29.0m
