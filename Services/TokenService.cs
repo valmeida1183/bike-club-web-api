@@ -21,7 +21,7 @@ namespace BikeClub.Services
                     new Claim(ClaimTypes.Name, user.Name),
                     new Claim(ClaimTypes.Role, user.RoleName)
                 }),
-                Expires = DateTime.UtcNow.AddHours(2),
+                Expires = DateTime.UtcNow.AddHours(Settings.TokenExpirationHours),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)      
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);

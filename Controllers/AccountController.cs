@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using BikeClub.Data;
@@ -24,7 +25,14 @@ namespace BikeClub.Controllers
         [HttpPost("login")]
         [AllowAnonymous]
         public async Task<ActionResult<dynamic>> Authenticate ([FromBody] User model) 
-        {             
+        {   
+            if(model == null || 
+               string.IsNullOrWhiteSpace(model.Email) ||
+               string.IsNullOrWhiteSpace(model.Password))
+            {
+                return BadRequest(new { message = "Invalid Email or Password" });
+            } 
+
             var hashPassword = CryptographerSerivce.Hash(model.Password);           
 
             var user = await context.Users
@@ -37,11 +45,13 @@ namespace BikeClub.Controllers
                 return NotFound(new { message = "Invalid Email or Password"});
             }
 
-            var token = TokenService.GenerateToken(user);
             //Esconde a senha
             user.Password = "***********";
 
-            return Ok(new {user = user, token = token});
+            var token = TokenService.GenerateToken(user);
+            var expiresIn = DateTime.UtcNow.AddHours(Settings.TokenExpirationHours);
+            
+            return Ok(new {user = user, token = token, expiresIn = expiresIn });
         }
 
         [HttpPost("register")]
@@ -53,18 +63,29 @@ namespace BikeClub.Controllers
                return BadRequest(ModelState);
             }
 
-            try
+            var user = context.Users.Count(u => u.Email == model.Email);                   
+
+            if (user > 0)
             {
+                return BadRequest(new { message = "This email exists already"});
+            }       
+
+            try
+            {     
                 // Força o user a ser um ciclista
                 model.RoleName = RoleStatic.Cyclist;
-                model.Password = CryptographerSerivce.Hash(model.Password);              
+                model.Password = CryptographerSerivce.Hash(model.Password);                     
 
                 context.Users.Add(model);
                 await context.SaveChangesAsync();
 
+                //Esconde a senha
                 model.Password = "***********";
 
-                return Ok(model);
+                var token = TokenService.GenerateToken(model);
+                var expiresIn = DateTime.UtcNow.AddHours(Settings.TokenExpirationHours);
+
+                return Ok(new {user = model, token = token, expiresIn = expiresIn });
             }
             catch (System.Exception ex)
             {                
