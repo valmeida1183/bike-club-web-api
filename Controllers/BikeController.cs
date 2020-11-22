@@ -34,6 +34,8 @@ namespace BikeClub.Controllers
                         (!gears.HasValue || b.Gears <= gears) &&
                         (!frameSize.HasValue || b.FrameSize <= frameSize) &&
                         (!rimSize.HasValue || b.RimSize <= rimSize))
+                .Include(b => b.Gender)
+                .Include(b => b.Category)
                 .ToListAsync();
 
             return Ok(bikes);
