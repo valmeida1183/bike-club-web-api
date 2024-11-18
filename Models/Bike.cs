@@ -22,11 +22,11 @@ namespace BikeClub.Models
 
         [Required(ErrorMessage = "{0} field is required")]
         [StringLength(20, MinimumLength = 1, ErrorMessage = "{0} field must contain between {2} and {1} characters")]
-        public string Model { get; set; }
+        public string? Model { get; set; }
 
         [Required(ErrorMessage = "{0} field is required")]
         [StringLength(300, MinimumLength = 1, ErrorMessage = "{0} field must contain between {2} and {1} characters")]
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
         [Required(ErrorMessage = "{0} field is required")]
         [DataType(DataType.Currency)]
@@ -34,12 +34,12 @@ namespace BikeClub.Models
         public decimal Price { get; set; }
 
         [Required(ErrorMessage = "{0} field is required")]
-        public string Image {get; set;} 
-        public string GenderCode { get; set; }
+        public string? Image { get; set; }
+        public string? GenderCode { get; set; }
         public int CategoryId { get; set; }
-        public virtual ICollection<Purchase> Purchases { get; set; }
+        public virtual ICollection<Purchase>? Purchases { get; set; }
 
-        public virtual Gender Gender { get; set; }
-        public virtual Category Category {get; set; }
+        public virtual Gender? Gender { get; set; }
+        public virtual Category? Category { get; set; }
     }
 }

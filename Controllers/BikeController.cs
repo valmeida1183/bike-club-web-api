@@ -20,16 +20,16 @@ namespace BikeClub.Controllers
         public BikeController(DataContext context)
         {
             this.context = context;
-        }        
+        }
 
-        [HttpGet()]        
-        public async Task<ActionResult<List<Bike>>> Get([FromQuery] int? categoryId = null, string genderCode = null, 
+        [HttpGet()]
+        public async Task<ActionResult<List<Bike>>> Get([FromQuery] int? categoryId = null, string? genderCode = null,
         decimal? price = null, int? gears = null, decimal? frameSize = null, decimal? rimSize = null)
         {
             var bikes = await context.Bikes
                 .AsNoTracking()
-                .Where(b => (!categoryId.HasValue || b.CategoryId == categoryId) && 
-                        (string.IsNullOrEmpty(genderCode) || b.GenderCode == genderCode) && 
+                .Where(b => (!categoryId.HasValue || b.CategoryId == categoryId) &&
+                        (string.IsNullOrEmpty(genderCode) || b.GenderCode == genderCode) &&
                         (!price.HasValue || b.Price <= price) &&
                         (!gears.HasValue || b.Gears <= gears) &&
                         (!frameSize.HasValue || b.FrameSize <= frameSize) &&
@@ -76,7 +76,7 @@ namespace BikeClub.Controllers
         {
             if (id != model.Id)
             {
-                return BadRequest(new { message = "Cannot change Id of Bike."});
+                return BadRequest(new { message = "Cannot change Id of Bike." });
             }
 
             if (!ModelState.IsValid)
@@ -92,7 +92,7 @@ namespace BikeClub.Controllers
                 return Ok(model);
             }
             catch (System.Exception ex)
-            {                
+            {
                 return ExceptionHandlerService.HandleException(ex);
             }
         }
@@ -104,7 +104,7 @@ namespace BikeClub.Controllers
             var bike = await context.Bikes.FirstOrDefaultAsync(b => b.Id == id);
             if (bike == null)
             {
-                return NotFound(new { message = "Bike not found."});
+                return NotFound(new { message = "Bike not found." });
             }
 
             try
@@ -112,7 +112,7 @@ namespace BikeClub.Controllers
                 context.Bikes.Remove(bike);
                 await context.SaveChangesAsync();
 
-                return Ok(new { message = "Bike removed with success." }); 
+                return Ok(new { message = "Bike removed with success." });
             }
             catch (System.Exception ex)
             {
