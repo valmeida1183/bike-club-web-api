@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using BikeClub.Data;
 using BikeClub.Models;
 using BikeClub.Services;
@@ -12,7 +10,7 @@ namespace BikeClub.Controllers
 {
     [Route("v1/categories")]
     [Authorize]
-    public class CategoryController : ControllerBase 
+    public class CategoryController : ControllerBase
     {
         private readonly DataContext context;
 
@@ -23,7 +21,7 @@ namespace BikeClub.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        [ResponseCache(VaryByHeader="User-Agent", Location = ResponseCacheLocation.Any, Duration = 30)]
+        [ResponseCache(VaryByHeader = "User-Agent", Location = ResponseCacheLocation.Any, Duration = 30)]
         public async Task<ActionResult<List<Category>>> Get()
         {
             var categories = await context.Categories.AsNoTracking().ToListAsync();
@@ -56,7 +54,7 @@ namespace BikeClub.Controllers
                 return Ok(model);
             }
             catch (System.Exception ex)
-            {                
+            {
                 return ExceptionHandlerService.HandleException(ex);
             }
         }
@@ -64,12 +62,12 @@ namespace BikeClub.Controllers
         [HttpPut("{id:int}")]
         [Authorize(Roles = RoleStatic.Monitor)]
         public async Task<ActionResult<Category>> Put(
-            int id, 
+            int id,
             [FromBody] Category model)
         {
             if (id != model.Id)
             {
-                return BadRequest(new { message = "Cannot change Id of Category"} );
+                return BadRequest(new { message = "Cannot change Id of Category" });
             }
 
             if (!ModelState.IsValid)
@@ -85,8 +83,8 @@ namespace BikeClub.Controllers
                 return Ok(model);
             }
             catch (System.Exception ex)
-            {                
-               return ExceptionHandlerService.HandleException(ex);
+            {
+                return ExceptionHandlerService.HandleException(ex);
             }
         }
 
@@ -97,7 +95,7 @@ namespace BikeClub.Controllers
             var category = await context.Categories.FirstOrDefaultAsync(c => c.Id == id);
             if (category == null)
             {
-                return NotFound(new { message = "Category not found." }); 
+                return NotFound(new { message = "Category not found." });
             }
 
             try
@@ -108,8 +106,8 @@ namespace BikeClub.Controllers
                 return Ok(new { message = "Category removed with success." });
             }
             catch (System.Exception ex)
-            {                
-               return ExceptionHandlerService.HandleException(ex);
+            {
+                return ExceptionHandlerService.HandleException(ex);
             }
         }
     }

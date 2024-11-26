@@ -9,7 +9,7 @@ namespace BikeClub.Data.Seed
         public static void Seed(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<User>().HasData(
-                new User {Id = 1, Email = "administrator@administrator.com", Password = CryptographerSerivce.Hash("Master1"), Phone="(99)99999-9999", Name="Admin", LastName="Master", GenderCode="M", RoleName="Monitor" }
+                new User { Id = 1, Email = "administrator@administrator.com", Password = CryptographerService.Hash("Master1"), Phone = "(99)99999-9999", Name = "Admin", LastName = "Master", GenderCode = "M", RoleName = "Monitor" }
             );
         }
     }

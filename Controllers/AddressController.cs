@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using BikeClub.Data;
 using BikeClub.Models;
 using BikeClub.Services;
@@ -12,7 +10,7 @@ namespace BikeClub.Controllers
 {
     [Route("v1/addresses")]
     [Authorize]
-    public class AddressController: ControllerBase
+    public class AddressController : ControllerBase
     {
         private readonly DataContext context;
 
@@ -21,7 +19,7 @@ namespace BikeClub.Controllers
             this.context = context;
         }
 
-        [HttpGet]        
+        [HttpGet]
         public async Task<ActionResult<List<Address>>> Get()
         {
             var addresses = await context.Addresses.AsNoTracking().ToListAsync();
@@ -61,7 +59,7 @@ namespace BikeClub.Controllers
         {
             if (id != model.Id)
             {
-                return BadRequest(new { message = "Cannot change Id of Address."});
+                return BadRequest(new { message = "Cannot change Id of Address." });
             }
 
             if (!ModelState.IsValid)
@@ -89,7 +87,7 @@ namespace BikeClub.Controllers
             var address = await context.Addresses.FirstOrDefaultAsync(a => a.Id == id);
             if (address == null)
             {
-                return NotFound(new { message = "Address not found."});
+                return NotFound(new { message = "Address not found." });
             }
 
             try
@@ -101,7 +99,7 @@ namespace BikeClub.Controllers
 
             }
             catch (System.Exception ex)
-            {                
+            {
                 return ExceptionHandlerService.HandleException(ex);
             }
         }

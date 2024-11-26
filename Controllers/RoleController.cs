@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using BikeClub.Data;
 using BikeClub.Models;
 using BikeClub.Services;
@@ -33,13 +30,13 @@ namespace BikeClub.Controllers
         public async Task<ActionResult<Role>> GetByName(
             string name)
         {
-           var role = await context.Roles.AsNoTracking().FirstOrDefaultAsync(r => r.Name == name);
-           return Ok(role);
+            var role = await context.Roles.AsNoTracking().FirstOrDefaultAsync(r => r.Name == name);
+            return Ok(role);
         }
 
         [HttpPost]
         [Authorize(Roles = RoleStatic.Monitor)]
-        public async Task<ActionResult<Role>> Post (
+        public async Task<ActionResult<Role>> Post(
             [FromBody] Role model)
         {
             if (!ModelState.IsValid)
@@ -55,15 +52,15 @@ namespace BikeClub.Controllers
                 return Ok(model);
             }
             catch (System.Exception ex)
-            {                
-               return ExceptionHandlerService.HandleException(ex);
-            }       
+            {
+                return ExceptionHandlerService.HandleException(ex);
+            }
         }
 
         [HttpPut("{name}")]
         [Authorize(Roles = RoleStatic.Monitor)]
-        public async Task<ActionResult<Role>> Put (
-            string name, 
+        public async Task<ActionResult<Role>> Put(
+            string name,
             [FromBody] Role model)
         {
             if (!name.Equals(model.Name, StringComparison.OrdinalIgnoreCase))
@@ -78,14 +75,14 @@ namespace BikeClub.Controllers
 
             try
             {
-               // Desta Forma o EF vai verificar o que foi mudado em relação ao registro do banco e persistir no banco somente o que foi mudado.
+                // Desta Forma o EF vai verificar o que foi mudado em relação ao registro do banco e persistir no banco somente o que foi mudado.
                 context.Entry<Role>(model).State = EntityState.Modified;
                 await context.SaveChangesAsync();
-                return Ok(model); 
+                return Ok(model);
             }
             catch (System.Exception ex)
-            {                
-               return ExceptionHandlerService.HandleException(ex);
+            {
+                return ExceptionHandlerService.HandleException(ex);
             }
         }
     }

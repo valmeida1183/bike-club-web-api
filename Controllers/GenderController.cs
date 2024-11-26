@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using BikeClub.Data;
 using BikeClub.Models;
 using BikeClub.Services;
@@ -12,7 +10,7 @@ namespace BikeClub.Controllers
 {
     [Route("v1/genders")]
     [Authorize]
-    public class GenderController : ControllerBase  
+    public class GenderController : ControllerBase
     {
         private readonly DataContext context;
 
@@ -23,7 +21,7 @@ namespace BikeClub.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        [ResponseCache(VaryByHeader="User-Agent", Location = ResponseCacheLocation.Any, Duration = 30)]
+        [ResponseCache(VaryByHeader = "User-Agent", Location = ResponseCacheLocation.Any, Duration = 30)]
         public async Task<ActionResult<List<Gender>>> Get()
         {
             var genders = await context.Genders.AsNoTracking().ToListAsync();
@@ -45,18 +43,18 @@ namespace BikeClub.Controllers
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
-            }            
+            }
 
             try
-            {         
+            {
                 context.Genders.Add(model);
                 await context.SaveChangesAsync();
 
                 return Ok(model);
             }
-            catch(System.Exception ex)
-            {                
-               return ExceptionHandlerService.HandleException(ex);
+            catch (System.Exception ex)
+            {
+                return ExceptionHandlerService.HandleException(ex);
             }
         }
     }

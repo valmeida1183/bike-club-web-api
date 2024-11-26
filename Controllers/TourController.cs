@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using BikeClub.Data;
 using BikeClub.Models;
 using BikeClub.Services;
@@ -12,7 +10,7 @@ namespace BikeClub.Controllers
 {
     [Route("v1/tours")]
     [Authorize]
-    public class TourController : ControllerBase 
+    public class TourController : ControllerBase
     {
         private readonly DataContext context;
 
@@ -63,7 +61,7 @@ namespace BikeClub.Controllers
         {
             if (id != model.Id)
             {
-                return BadRequest(new { message = "Cannot change Id of Tour."});
+                return BadRequest(new { message = "Cannot change Id of Tour." });
             }
 
             if (!ModelState.IsValid)
@@ -79,7 +77,7 @@ namespace BikeClub.Controllers
                 return Ok(model);
             }
             catch (System.Exception ex)
-            {                
+            {
                 return ExceptionHandlerService.HandleException(ex);
             }
         }

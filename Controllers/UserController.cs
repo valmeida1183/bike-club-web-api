@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using BikeClub.Data;
 using BikeClub.Models;
 using BikeClub.Services;
@@ -47,7 +45,7 @@ namespace BikeClub.Controllers
             try
             {
                 model.RoleName = RoleStatic.Monitor;
-                model.Password = CryptographerSerivce.Hash(model.Password);
+                model.Password = CryptographerService.Hash(model.Password);
 
                 context.Users.Add(model);
                 await context.SaveChangesAsync();
@@ -55,20 +53,20 @@ namespace BikeClub.Controllers
                 return Ok(model);
             }
             catch (System.Exception ex)
-            {                
+            {
                 return ExceptionHandlerService.HandleException(ex);
             }
         }
 
         [HttpPut("{id:int}")]
         [Authorize(Roles = RoleStatic.Monitor)]
-        public async Task<ActionResult<User>> Put (
-            int id, 
+        public async Task<ActionResult<User>> Put(
+            int id,
             [FromBody] User model)
         {
             if (id != model.Id)
             {
-                return BadRequest(new { message = "Cannot change Id of User."});
+                return BadRequest(new { message = "Cannot change Id of User." });
             }
 
             if (!ModelState.IsValid)
@@ -78,14 +76,14 @@ namespace BikeClub.Controllers
 
             try
             {
-               context.Entry<User>(model).State = EntityState.Modified;
-               await context.SaveChangesAsync();
+                context.Entry<User>(model).State = EntityState.Modified;
+                await context.SaveChangesAsync();
 
-               return Ok(model); 
+                return Ok(model);
             }
             catch (System.Exception ex)
-            {                
-               return ExceptionHandlerService.HandleException(ex);
+            {
+                return ExceptionHandlerService.HandleException(ex);
             }
         }
     }
