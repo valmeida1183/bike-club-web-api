@@ -121,7 +121,6 @@ void ConfigureSwagger(WebApplicationBuilder builder)
         });
 }
 
-
 void LoadSettings(WebApplication app)
 {
     Settings.Secret = app.Configuration.GetValue<string>("Secret");
