@@ -4,6 +4,7 @@ using BikeClub.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace bike_club_api.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20260201004856_MakeAddressIdNullableAndAddUserIdUnique")]
+    partial class MakeAddressIdNullableAndAddUserIdUnique
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -740,7 +743,7 @@ namespace bike_club_api.Migrations
                         .HasForeignKey("AddressId");
 
                     b.HasOne("BikeClub.Models.User", "User")
-                        .WithOne("ShopCart")
+                        .WithOne()
                         .HasForeignKey("BikeClub.Models.ShopCart", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -832,8 +835,6 @@ namespace bike_club_api.Migrations
 
             modelBuilder.Entity("BikeClub.Models.User", b =>
                 {
-                    b.Navigation("ShopCart");
-
                     b.Navigation("TourParticipants");
                 });
 #pragma warning restore 612, 618

@@ -41,7 +41,11 @@ namespace BikeClub.Controllers
         [HttpGet("{id:int}")]
         public async Task<ActionResult<Bike>> GetById(int id)
         {
-            var bike = await context.Bikes.AsNoTracking().FirstOrDefaultAsync(b => b.Id == id);
+            var bike = await context.Bikes.AsNoTracking()
+            .Include(b => b.Category)
+            .Include(b => b.Gender)
+            .FirstOrDefaultAsync(b => b.Id == id);
+
             return Ok(bike);
         }
 

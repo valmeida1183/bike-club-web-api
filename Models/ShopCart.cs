@@ -18,9 +18,9 @@ namespace BikeClub.Models
         public decimal TotalAmount { get; set; }
 
         public int UserId { get; set; }
-        public int AddressId { get; set; }
+        public int? AddressId { get; set; }
 
-        public virtual ICollection<Purchase>? Purchases { get; set; }
+        public virtual ICollection<Purchase> Purchases { get; set; } = [];
         public virtual User? User { get; set; }
         public virtual Address? Address { get; set; }
     }

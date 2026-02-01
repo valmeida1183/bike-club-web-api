@@ -73,6 +73,16 @@ namespace BikeClub.Controllers
                 model.RoleName = RoleStatic.Cyclist;
                 model.Password = CryptographerService.Hash(model.Password);
 
+                // Cria o carrinho de compras vazio para o usuário
+                var shopCart = new ShopCart
+                {
+                    UserId = model.Id,
+                    PurchaseDate = DateTimeOffset.UtcNow,
+                    TotalAmount = 0
+                };
+
+                model.ShopCart = shopCart;
+
                 context.Users.Add(model);
                 await context.SaveChangesAsync();
 

@@ -16,14 +16,20 @@ namespace BikeClub.Data.Configurations
                 .HasColumnType("money")
                 .IsRequired();
             builder.HasOne(s => s.User)
-                .WithMany()
-                .HasForeignKey(s => s.UserId);
+                .WithOne(u => u.ShopCart)
+                .HasForeignKey<ShopCart>(s => s.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
             builder.HasOne(s => s.Address)
                 .WithMany()
-                .HasForeignKey(s => s.AddressId);
+                .HasForeignKey(s => s.AddressId)
+                .IsRequired(false);
             builder.HasMany(s => s.Purchases)
                 .WithOne(p => p.ShopCart)
                 .HasForeignKey(p => p.ShopCartId);
+
+            // Add unique constraint on UserId
+            builder.HasIndex(s => s.UserId)
+                .IsUnique();
         }
     }
 }

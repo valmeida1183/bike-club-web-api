@@ -33,5 +33,6 @@ namespace BikeClub.Models
         public virtual ICollection<TourParticipant>? TourParticipants { get; set; }
         public virtual Role? Role { get; set; }
         public virtual Gender? Gender { get; set; }
+        public virtual ShopCart? ShopCart { get; set; }
     }
 }
