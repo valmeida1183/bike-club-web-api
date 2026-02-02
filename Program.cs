@@ -1,4 +1,5 @@
 using System.Text;
+using System.Text.Json.Serialization;
 using BikeClub;
 using BikeClub.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -95,7 +96,11 @@ void ConfigureCORS(WebApplicationBuilder builder)
 
 void ConfigureControllers(WebApplicationBuilder builder)
 {
-    builder.Services.AddControllers();
+    builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+    });
 }
 
 void ConfigureDataContext(WebApplicationBuilder builder)
