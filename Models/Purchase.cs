@@ -4,7 +4,9 @@ namespace BikeClub.Models
 {
     public class Purchase
     {
+        [Required(ErrorMessage = "{0} field is required")]
         public int ShopCartId { get; set; }
+        [Required(ErrorMessage = "{0} field is required")]
         public int BikeId { get; set; }
 
         [Required(ErrorMessage = "{0} field is required")]

@@ -29,7 +29,7 @@ namespace BikeClub.Models
         public string LastName { get; set; } = string.Empty;
 
         public string GenderCode { get; set; } = string.Empty;
-        public string RoleName { get; set; } = string.Empty;
+        public string? RoleName { get; set; } = string.Empty;
         public virtual ICollection<TourParticipant>? TourParticipants { get; set; }
         public virtual Role? Role { get; set; }
         public virtual Gender? Gender { get; set; }

@@ -51,37 +51,46 @@ public class ShopCartController : ControllerBase
     }
   }
 
-  [HttpPut("{id:int}")]
-  public async Task<ActionResult<ShopCart>> UpdateShopCart(int id, [FromBody] ShopCart model)
+  [HttpPost("add-purchase")]
+  public async Task<ActionResult<ShopCart>> AddPurchaseToShopCart([FromBody] Purchase purchase)
   {
-    if (id != model.Id)
-    {
-      return BadRequest(new { message = "Cannot change Id of ShopCart." });
-    }
-
     if (!ModelState.IsValid)
     {
       return BadRequest(ModelState);
     }
 
-    var existingShopCart = await context.ShopCarts
-      .Include(sc => sc.Purchases)
-      .ThenInclude(p => p.Bike)
-      .FirstOrDefaultAsync(sc => sc.Id == id);
+    var currentPurchase = await context.Purchases
+      .FirstOrDefaultAsync(p => p.ShopCartId == purchase.ShopCartId && p.BikeId == purchase.BikeId);
 
-    if (existingShopCart == null)
+    if (currentPurchase != null)
     {
-      return NotFound();
+      currentPurchase.Quantity += purchase.Quantity;
+      context.Purchases.Update(currentPurchase);
+    }
+    else
+    {
+      context.Purchases.Add(purchase);
     }
 
     try
     {
-      UpdatePurchaseList(existingShopCart, model.Purchases);
-      existingShopCart.TotalAmount = await CalculateTotalAmount(existingShopCart.Purchases);
+      await context.SaveChangesAsync();
+
+      var shopCart = await context.ShopCarts
+      .Include(sc => sc.Purchases)
+      .ThenInclude(p => p.Bike)
+      .FirstOrDefaultAsync(sc => sc.Id == purchase.ShopCartId);
+
+      if (shopCart == null)
+      {
+        return BadRequest(new { message = "ShopCart not found." });
+      }
+
+      shopCart.TotalAmount = CalculateTotalAmount(shopCart.Purchases);
 
       await context.SaveChangesAsync();
 
-      return Ok(existingShopCart);
+      return Ok(shopCart);
     }
     catch (Exception ex)
     {
@@ -89,45 +98,52 @@ public class ShopCartController : ControllerBase
     }
   }
 
-  private void UpdatePurchaseList(ShopCart existingShopCart, ICollection<Purchase> updatedPurchases)
+  [HttpDelete("remove-purchase/{shopCartId:int}/{bikeId:int}")]
+  public async Task<ActionResult> RemovePurchaseFromShopCart(int shopCartId, int bikeId)
   {
-    var purchasesToRemove = existingShopCart.Purchases
-      .Where(p => !updatedPurchases.Any(mp => mp.BikeId == p.BikeId && mp.ShopCartId == p.ShopCartId))
-      .ToList();
+    var purchase = await context.Purchases
+      .FirstOrDefaultAsync(p => p.ShopCartId == shopCartId && p.BikeId == bikeId);
 
-    foreach (var purchase in purchasesToRemove)
+    if (purchase == null)
     {
-      context.Purchases.Remove(purchase);
+      return NotFound(new { message = "Purchase not found." });
     }
 
-    existingShopCart.Purchases.Clear();
-    foreach (var updatedPurchase in updatedPurchases)
-    {
-      var purchase = new Purchase
-      {
-        BikeId = updatedPurchase.BikeId,
-        ShopCartId = updatedPurchase.ShopCartId,
-        Quantity = updatedPurchase.Quantity
-      };
+    context.Purchases.Remove(purchase);
 
-      existingShopCart.Purchases.Add(purchase);
+    try
+    {
+      await context.SaveChangesAsync();
+
+      var shopCart = await context.ShopCarts
+        .Include(sc => sc.Purchases)
+        .ThenInclude(p => p.Bike)
+        .FirstOrDefaultAsync(sc => sc.Id == shopCartId);
+
+      if (shopCart == null)
+      {
+        return BadRequest(new { message = "ShopCart not found." });
+      }
+
+      shopCart.TotalAmount = CalculateTotalAmount(shopCart.Purchases);
+
+      await context.SaveChangesAsync();
+
+      return Ok(shopCart);
+    }
+    catch (Exception ex)
+    {
+      return ExceptionHandlerService.HandleException(ex);
     }
   }
 
-  private async Task<decimal> CalculateTotalAmount(IEnumerable<Purchase> purchases)
+  private decimal CalculateTotalAmount(IEnumerable<Purchase> purchases)
   {
     decimal total = 0m;
-    var bikeIds = purchases.Select(p => p.BikeId).ToList();
-    var bikes = await context.Bikes
-      .Where(b => bikeIds.Contains(b.Id))
-      .ToDictionaryAsync(b => b.Id);
 
     foreach (var purchase in purchases)
     {
-      if (bikes.TryGetValue(purchase.BikeId, out var bike))
-      {
-        total += bike.Price * purchase.Quantity;
-      }
+      total += purchase.Bike!.Price * purchase.Quantity;
     }
 
     return total;
