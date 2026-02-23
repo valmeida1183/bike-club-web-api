@@ -23,6 +23,7 @@ public class ShopCartController : ControllerBase
   {
     var shopCart = await context.ShopCarts
         .AsNoTracking()
+        .Include(sc => sc.Address)
         .Include(sc => sc.Purchases)
         .ThenInclude(p => p.Bike)
         .FirstOrDefaultAsync(sc => sc.UserId == userId);
@@ -130,6 +131,42 @@ public class ShopCartController : ControllerBase
       await context.SaveChangesAsync();
 
       return Ok(shopCart);
+    }
+    catch (Exception ex)
+    {
+      return ExceptionHandlerService.HandleException(ex);
+    }
+  }
+
+  [HttpPatch("{shopCartId:int}/address")]
+  public async Task<ActionResult<ShopCart>> SetAddress(int shopCartId, [FromBody] Address address)
+  {
+    if (!ModelState.IsValid)
+    {
+      return BadRequest(ModelState);
+    }
+
+    try
+    {
+      var shopCart = await context.ShopCarts.FindAsync(shopCartId);
+
+      if (shopCart == null)
+      {
+        return NotFound(new { message = "ShopCart not found." });
+      }
+
+      address.Id = shopCart.AddressId ?? 0;
+      shopCart.Address = address;
+      await context.SaveChangesAsync();
+
+      var result = await context.ShopCarts
+        .AsNoTracking()
+        .Include(sc => sc.Address)
+        .Include(sc => sc.Purchases)
+        .ThenInclude(p => p.Bike)
+        .FirstOrDefaultAsync(sc => sc.Id == shopCartId);
+
+      return Ok(result);
     }
     catch (Exception ex)
     {
