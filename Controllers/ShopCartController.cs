@@ -99,8 +99,8 @@ public class ShopCartController : ControllerBase
     }
   }
 
-  [HttpDelete("remove-purchase/{shopCartId:int}/{bikeId:int}")]
-  public async Task<ActionResult> RemovePurchaseFromShopCart(int shopCartId, int bikeId)
+  [HttpPatch("update-purchase/{shopCartId:int}/{bikeId:int}")]
+  public async Task<ActionResult> UpdatePurchaseInShopCart(int shopCartId, int bikeId, [FromBody] Purchase updatedPurchase)
   {
     var purchase = await context.Purchases
       .FirstOrDefaultAsync(p => p.ShopCartId == shopCartId && p.BikeId == bikeId);
@@ -110,13 +110,14 @@ public class ShopCartController : ControllerBase
       return NotFound(new { message = "Purchase not found." });
     }
 
-    context.Purchases.Remove(purchase);
+    purchase.Quantity = updatedPurchase.Quantity;
 
     try
     {
       await context.SaveChangesAsync();
 
       var shopCart = await context.ShopCarts
+        .Include(sc => sc.Address)
         .Include(sc => sc.Purchases)
         .ThenInclude(p => p.Bike)
         .FirstOrDefaultAsync(sc => sc.Id == shopCartId);
@@ -167,6 +168,46 @@ public class ShopCartController : ControllerBase
         .FirstOrDefaultAsync(sc => sc.Id == shopCartId);
 
       return Ok(result);
+    }
+    catch (Exception ex)
+    {
+      return ExceptionHandlerService.HandleException(ex);
+    }
+  }
+
+  [HttpDelete("remove-purchase/{shopCartId:int}/{bikeId:int}")]
+  public async Task<ActionResult> RemovePurchaseFromShopCart(int shopCartId, int bikeId)
+  {
+    var purchase = await context.Purchases
+      .FirstOrDefaultAsync(p => p.ShopCartId == shopCartId && p.BikeId == bikeId);
+
+    if (purchase == null)
+    {
+      return NotFound(new { message = "Purchase not found." });
+    }
+
+    context.Purchases.Remove(purchase);
+
+    try
+    {
+      await context.SaveChangesAsync();
+
+      var shopCart = await context.ShopCarts
+        .Include(sc => sc.Address)
+        .Include(sc => sc.Purchases)
+        .ThenInclude(p => p.Bike)
+        .FirstOrDefaultAsync(sc => sc.Id == shopCartId);
+
+      if (shopCart == null)
+      {
+        return BadRequest(new { message = "ShopCart not found." });
+      }
+
+      shopCart.TotalAmount = CalculateTotalAmount(shopCart.Purchases);
+
+      await context.SaveChangesAsync();
+
+      return Ok(shopCart);
     }
     catch (Exception ex)
     {
