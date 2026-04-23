@@ -19,6 +19,7 @@
 - A Domain folder should be created at root of project.
 - Every endpoint should return a Result class (result pattern)
 - Payload validation should use FluentValidation library.
+- Handlers should validate the Request object using FluentValidation validator class
 - Endpoints should use minimal Api approach.
 - Models folder should be renamed to Entities and should be placed inside Domain folder.
 - All Data Annottations in model classes should be removed after been migrated to FluendValidation.
