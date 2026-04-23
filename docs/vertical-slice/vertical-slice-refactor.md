@@ -118,5 +118,16 @@ Domain
 
 <skills> 
   - Use the result-pattern skill to implement the result pattern.
-  - Use the minimal-api skill to implement the endpoints endpoints register and mappign configuration
+  - Use the minimal-api skill to implement the endpoints register and mappign configuration
 </skills>
+
+<critical>
+    ### Mandatory Skills
+
+    - result-pattern — to implement the result pattern
+    - minimal-api skill — to implement the endpoints register and mappign configuration
+
+    ### Ask if needed
+    USE ASK USER QUESTION TOOL if somenthing is not clear or any information missing is detected.
+
+</critical>
