@@ -131,3 +131,18 @@ Domain
     USE ASK USER QUESTION TOOL if somenthing is not clear or any information missing is detected.
 
 </critical>
+
+<references>
+  ### References about Vertical slices implementation:
+  - https://www.milanjovanovic.tech/blog/vertical-slice-architecture-is-easier-than-you-think
+  - https://www.milanjovanovic.tech/blog/vertical-slice-architecture-structuring-vertical-slices
+  - https://www.milanjovanovic.tech/blog/vertical-slice-architecture-where-does-the-shared-logic-live
+
+### References about Register and Add minimal Api
+
+- https://www.milanjovanovic.tech/blog/automatically-register-minimal-apis-in-aspnetcore
+
+### References about Result pattern
+
+- https://www.milanjovanovic.tech/blog/functional-error-handling-in-dotnet-with-the-result-pattern
+  <references>
