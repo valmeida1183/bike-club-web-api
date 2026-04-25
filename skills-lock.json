@@ -5,6 +5,11 @@
       "source": "ronnythedev/dotnet-clean-architecture-skills",
       "sourceType": "github",
       "computedHash": "0f08df91b4b0f700af7428247ebd38efdaeb98a9bde9a661a5b507618de44633"
+    },
+    "skill-best-practices": {
+      "source": "pedronauck/skills",
+      "sourceType": "github",
+      "computedHash": "8ec13fa8b863613950c311b17920e66397cc6a8bc56a7c1ad978f8c920757444"
     }
   }
 }
