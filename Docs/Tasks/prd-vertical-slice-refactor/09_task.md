@@ -36,11 +36,11 @@ Migrate `TourController`. Straightforward CRUD — same pattern as Address but w
 
 ## Implementation Details
 
-See `techspec.md` → "API Endpoints" (tour row). Response payload for success preserves today's shape (Tour entity serialized as-is, matching EF reference-handling `IgnoreCycles` behavior configured in `Program.cs`).
+See `techspec.md` → "API Endpoints" (tour row). Success values preserve today's shape (Tour entity serialized as-is, matching EF reference-handling `IgnoreCycles` behavior). Those values now live at `response.value` of the `Result<T>` envelope; clients reading `response.value` see exactly today's bare body. DELETE returns `204 NoContent` on success.
 
 ## Success Criteria
 
-- All five routes behave identically on the happy path.
+- All five routes preserve route, verb, success status code. Success body is the `Result<T>` envelope (or `204 NoContent` for DELETE); failures are the Result envelope at the appropriate status.
 - `Controllers/TourController.cs` gone.
 
 ## Task Tests
@@ -48,11 +48,11 @@ See `techspec.md` → "API Endpoints" (tour row). Response payload for success p
 - [ ] Unit tests — **N/A per PRD (out of scope).**
 - [ ] Integration tests — **N/A per PRD (out of scope).**
 - [ ] **Manual Verification**
-  - [ ] Cyclist: `GET /v1/tours` → 200; `POST /v1/tours` → 403.
-  - [ ] Monitor: `POST /v1/tours` valid body → 200; `POST` with invalid body → 400 ValidationProblem.
-  - [ ] Monitor: `PUT /v1/tours/1` with `{ "id": 2, ... }` → 400 `Tour.IdMismatch`.
-  - [ ] Monitor: `DELETE /v1/tours/{id}` hit → 200; miss → 404 ProblemDetails.
-  - [ ] `GET /v1/tours/9999` → 404 ProblemDetails (was 200 `null` before — documented behavior improvement).
+  - [ ] Cyclist: `GET /v1/tours` → 200 with Result envelope (`response.value` = list); `POST /v1/tours` → 403 (no body).
+  - [ ] Monitor: `POST /v1/tours` valid body → 200 with `Result<TourResponse>` envelope; `POST` with invalid body → 400 with validation Result envelope (`errors[]` populated).
+  - [ ] Monitor: `PUT /v1/tours/1` with `{ "id": 2, ... }` → 400 with `error.code: "Tour.IdMismatch"`.
+  - [ ] Monitor: `DELETE /v1/tours/{id}` hit → 204 NoContent; miss → 404 with `Result` envelope, `error.code: "Tour.NotFound"`.
+  - [ ] `GET /v1/tours/9999` → 404 Result envelope (was 200 `null` before — documented behavior improvement).
 
 <critical>ALWAYS CREATE AND EXECUTE TASK TESTS BEFORE CONSIDERING IT COMPLETED</critical>
 

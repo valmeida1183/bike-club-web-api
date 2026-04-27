@@ -13,15 +13,15 @@ Migrate `PurchaseController`. Two operations: `CreatePurchase` (POST — with up
 </skills>
 
 <requirements>
-- `Features/Purchase/CreatePurchase/` — `POST v1/purchases`, `RequireAuthorization()`.
+- `Features/Purchase/CreatePurchase/` — `POST v1/purchases`, `RequireAuthorization()`. Returns `Result<PurchaseResponse>`.
   - Validator mirrors `Purchase` entity annotations.
   - Handler: look up existing `Purchase` by `(ShopCartId, BikeId)` with `AsNoTracking().FirstOrDefaultAsync`.
-    - If found: increment `Quantity += request.Quantity`, `context.Purchases.Update(existing)`, save, return the **updated** purchase.
-    - If not: `context.Purchases.Add(new)`, save, return the **new** purchase.
-  - Success payload matches today's: `Ok(currentPurchase ?? purchase)`.
-- `Features/Purchase/DeletePurchase/` — `DELETE v1/purchases/{id:int}`, `RequireAuthorization()`.
-  - If not found → 404 ProblemDetails (today returns bare `NotFound()` — the new behavior is a 404 ProblemDetails envelope, which is the PRD-sanctioned error contract change).
-  - On success: `Ok(new { message = "Purchase removed with success." })`.
+    - If found: increment `Quantity += request.Quantity`, `context.Purchases.Update(existing)`, save, return `Result.Success(updatedPurchase)`.
+    - If not: `context.Purchases.Add(new)`, save, return `Result.Success(newPurchase)`.
+  - Success **value** matches today's `currentPurchase ?? purchase` body, now nested at `response.value` of the `Result<PurchaseResponse>` envelope.
+- `Features/Purchase/DeletePurchase/` — `DELETE v1/purchases/{id:int}`, `RequireAuthorization()`. Handler returns non-generic `Result`.
+  - If not found → `Result.Failure(PurchaseErrors.NotFound)` (`ErrorType.NotFound`) → 404 with the Result envelope (today returns bare `NotFound()` — the new behavior is a 404 with the Result envelope, which is the PRD-sanctioned response contract change).
+  - On success: handler returns `Result.Success()`; endpoint returns `204 NoContent` (no body). Today's `Ok(new { message = "Purchase removed with success." })` body is dropped because the verb does not produce a body under the new convention. If the team requires preserving the message, override the endpoint with `.ToIResult(onSuccess: r => Results.Ok(r))` and switch the handler to `Result<DeletePurchaseResponse>` carrying the message — explicit per-task decision.
 - Shared `PurchaseErrors.cs` with `NotFound`.
 - Delete `Controllers/PurchaseController.cs`.
 </requirements>
@@ -48,12 +48,12 @@ See `techspec.md` → "API Endpoints" (purchases row). The upsert logic uses `As
 - [ ] Unit tests — **N/A per PRD (out of scope).**
 - [ ] Integration tests — **N/A per PRD (out of scope).**
 - [ ] **Manual Verification**
-  - [ ] `POST /v1/purchases` with `{ shopCartId: X, bikeId: Y, quantity: 2 }` → 200, new purchase returned.
-  - [ ] Same POST again → 200, returned purchase has `quantity: 4` (incremented, not duplicated).
+  - [ ] `POST /v1/purchases` with `{ shopCartId: X, bikeId: Y, quantity: 2 }` → 200 with `Result<PurchaseResponse>` envelope; `response.value` is the new purchase.
+  - [ ] Same POST again → 200, `response.value.quantity` is 4 (incremented, not duplicated).
   - [ ] Verify in DB: only one row for `(X, Y)` exists after both calls.
-  - [ ] `POST /v1/purchases` with invalid body (e.g., missing bikeId) → 400 ValidationProblem.
-  - [ ] `DELETE /v1/purchases/{existingId}` → 200 `{ message: "Purchase removed with success." }`.
-  - [ ] `DELETE /v1/purchases/9999` → 404 ProblemDetails.
+  - [ ] `POST /v1/purchases` with invalid body (e.g., missing bikeId) → 400 with validation Result envelope (`errors[]` populated).
+  - [ ] `DELETE /v1/purchases/{existingId}` → 204 NoContent (no body, per new convention).
+  - [ ] `DELETE /v1/purchases/9999` → 404 with Result envelope, `error.code: "Purchase.NotFound"`, `error.type: "NotFound"`.
 
 <critical>ALWAYS CREATE AND EXECUTE TASK TESTS BEFORE CONSIDERING IT COMPLETED</critical>
 

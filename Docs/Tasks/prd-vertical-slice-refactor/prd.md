@@ -6,7 +6,7 @@
 
 ## Overview
 
-The bike-club-api is currently organized as a Data-Driven layered application (Controllers → Services → EF Core → Models). As the surface area has grown across 11 resources, cross-cutting coupling, implicit error handling via exceptions, and scattered validation have made feature-level changes harder and onboarding slower. This initiative refactors the project into a Vertical Slice Architecture using ASP.NET Core Minimal APIs, the Result pattern for explicit error handling, and FluentValidation for request validation. All existing `/v1/` routes and business behavior are preserved; error response bodies are standardized as part of the Result pattern adoption.
+The bike-club-api is currently organized as a Data-Driven layered application (Controllers → Services → EF Core → Models). As the surface area has grown across 11 resources, cross-cutting coupling, implicit error handling via exceptions, and scattered validation have made feature-level changes harder and onboarding slower. This initiative refactors the project into a Vertical Slice Architecture using ASP.NET Core Minimal APIs, the Result pattern for explicit error handling, and FluentValidation for request validation. All existing `/v1/` routes and business behavior are preserved. Both success and error response bodies are standardized as part of the Result pattern adoption: every endpoint that produces a body returns the `Result`/`Result<T>` envelope verbatim, with the previous bare-value success payload now nested inside `Result.Value` — this is a deliberate, client-visible contract change.
 
 This is an internal architectural change. No new product capabilities are introduced.
 
@@ -16,13 +16,15 @@ This is an internal architectural change. No new product capabilities are introd
 - **Explicit error handling**: every handler returns a `Result`/`Result<T>`; no business flow relies on thrown exceptions for control flow.
 - **Lean composition root**: `Program.cs` only wires extension methods; all service/middleware configuration lives in dedicated extension classes.
 - **Endpoint auto-registration**: all endpoints are discovered via reflection (or Scrutor) rather than registered by hand.
-- **Route and behavior preservation**: zero changes to route paths, HTTP verbs, auth requirements, or success response payloads.
+- **Route, verb, and auth preservation**: zero changes to route paths, HTTP verbs, or auth requirements. Success response status codes are preserved; success response **bodies** are wrapped in the `Result<T>` envelope (the previous bare value moves into `Result.Value`).
+- **Standardized response envelope**: every endpoint that produces a response body — success or failure, handler-returned or exception-caught — serializes the same `Result`/`Result<T>` shape so clients have a single response contract to parse.
 - **Measurable outcomes**:
   - 0 files under `Controllers/` after completion.
   - 0 `System.ComponentModel.DataAnnotations` validation attributes on domain entities after completion.
   - 100% of endpoints under `Features/` use Minimal API mapping and return `Result`/`Result<T>`.
+  - 100% of endpoints that produce a response body serialize the `Result`/`Result<T>` envelope (no bare values, no `ProblemDetails`).
   - `Program.cs` contains no inline service or middleware configuration — only extension method calls and `app.Run()`.
-  - All existing `/v1/` routes respond with identical status codes and success payloads (verified manually via Swagger/Postman).
+  - All existing `/v1/` routes respond with identical status codes; success response **values** match today's bare payloads exactly when read from the new envelope's `Value` property (verified manually via Swagger/Postman).
 
 ## User Stories
 
@@ -43,8 +45,8 @@ This is an internal architectural change. No new product capabilities are introd
 
 **Tertiary persona — API consumer (existing clients)**
 
-- As an API consumer, I want the same `/v1/` routes, verbs, and success payloads after the refactor so no integration work is required.
-- As an API consumer, I want a consistent, predictable error response shape across all endpoints.
+- As an API consumer, I want the same `/v1/` routes, verbs, and success status codes after the refactor so route-level integration is preserved.
+- As an API consumer, I want a single, consistent envelope across success and error responses so my client code parses one shape regardless of outcome. (Acknowledged: this is a breaking change to response bodies — the previous bare value now lives at `response.value`.)
 
 ## Main Features
 
@@ -90,17 +92,21 @@ All endpoints migrate from attribute-routed controllers to Minimal API endpoint 
 3.3. All endpoints MUST preserve their current authentication and authorization requirements (JWT bearer, `[Authorize(Roles = ...)]` equivalents via `.RequireAuthorization(...)`).
 3.4. Endpoints MUST delegate execution to their `[Operation]Handler` and translate the returned `Result` into an HTTP response.
 
-### 4. Result Pattern for Explicit Error Handling
+### 4. Result Pattern for Explicit Error Handling and Standardized Response Envelope
 
-Every handler returns a `Result` or `Result<T>` value. Endpoints map the result to an HTTP response. Exceptions remain reserved for unexpected/infrastructure failures.
+Every handler returns a `Result` or `Result<T>` value. Endpoints serialize that `Result`/`Result<T>` object as the HTTP response body and pick the status code from the `Error.Type`. Exceptions remain reserved for unexpected/infrastructure failures, but those are also surfaced through the same `Result` envelope so the wire contract is uniform.
 
 **Functional Requirements**
 
 4.1. `SharedKernel/` MUST contain a `Result`, `Result<T>`, `Error` record, and `ValidationResult` (aggregating multiple validation errors) type.
 4.2. Every handler's public method MUST return `Result` or `Result<T>`.
-4.3. Endpoints MUST convert `Result.Failure` to an HTTP response with an appropriate status code derived from the `Error` category (validation → 400, not-found → 404, conflict → 409, unauthorized → 401, forbidden → 403, etc.). Exact mapping is a Tech Spec concern.
-4.4. Error responses across all endpoints MUST share a single, consistent envelope shape (standardized error response contract). Success payloads MUST remain identical to the current API.
-4.5. The existing `ExceptionHandlerService` MUST be replaced by the Result-to-HTTP mapping plus a global exception middleware that handles only truly unexpected exceptions.
+4.3. Endpoints MUST translate the handler's `Result` into an HTTP response by:
+   - Picking the status code from the `Error.Type` for failures (validation → 400, not-found → 404, conflict → 409, unauthorized → 401, forbidden → 403; default `Failure` → 400) and `200 OK` for success — exact mapping is a Tech Spec concern.
+   - Serializing the entire `Result`/`Result<T>` object as the response body for any verb that produces a body (`Ok(result)`, `BadRequest(result)`, `NotFound(result)`, `Conflict(result)`, etc.). The success payload that was previously returned as a bare value MUST now be nested in `Result.Value`.
+   - Returning **no body** (`NoContent`) only when the operation's verb is conventionally body-less and the result is a non-generic `Result.Success()`. Failures still carry the Result body even when the success path returns 204.
+   - For statuses that the framework's helpers do not accept a body for (`Results.Unauthorized()`, `Results.Forbid()`), the body is omitted by necessity; the status code alone signals the outcome.
+4.4. Both success and error response bodies across **all** endpoints MUST share the single `Result`/`Result<T>` envelope shape (standardized response contract — no `ProblemDetails`, no bare-value success payloads). Status codes remain semantic.
+4.5. The existing `ExceptionHandlerService` MUST be replaced by the Result-to-HTTP mapping plus a global exception middleware that converts unexpected exceptions into the same `Result`-envelope failure body (with an appropriate `Error.Code` / `Error.Type`) — never `ProblemDetails`.
 
 ### 5. Request Validation via FluentValidation
 
@@ -179,8 +185,9 @@ Existing cross-cutting services move to `SharedKernel/` with their current behav
 
 **API consumer journey**
 
-1. All existing `/v1/` routes, HTTP verbs, auth headers, and success payloads behave identically. No client-side changes required for success paths.
-2. Error responses now share a single, predictable envelope shape across all endpoints.
+1. All existing `/v1/` routes, HTTP verbs, auth headers, and success status codes behave identically.
+2. Both success and error responses now share a single, predictable `Result`/`Result<T>` envelope shape across all endpoints — clients read the previous success payload from `response.value`, and the error from `response.error` (with `response.error.type` indicating the failure category).
+3. Endpoints whose verb intentionally returns no body (e.g., a delete that resolves to `204 NoContent`) keep their body-less behavior on the success path; failure paths from those same endpoints still carry the Result envelope.
 
 ## High-Level Technical Constraints
 
@@ -189,7 +196,7 @@ Existing cross-cutting services move to `SharedKernel/` with their current behav
 - **Routing**: all existing `/v1/` route paths and HTTP verbs MUST be preserved exactly. Swagger must continue to document them at `/swagger`.
 - **Static files**: `Resources/Images/` are served at `/Resources`. If ASP.NET Core requires the physical folder at the project root, `Resources/` stays at the root.
 - **Database**: no schema changes, no new migrations solely as a result of the refactor. Entity property names and types remain identical.
-- **Error response shape**: changes to a single standardized envelope. The envelope format is a Tech Spec decision (recommend ProblemDetails-compatible).
+- **Response envelope**: both success and error bodies move to a single standardized `Result`/`Result<T>` envelope (the same object the handler returns). The previous bare-value success payload is now nested in `Result.Value`. `ProblemDetails` is **not** used. The `Error.Type` enum drives the HTTP status code on failures; success uses the existing semantic status codes (typically `200 OK`, or `204 NoContent` for body-less operations).
 - **Coexistence window**: Controllers and Minimal API endpoints coexist during incremental migration but MUST NOT both publish the same route simultaneously.
 - **Libraries to introduce**: FluentValidation, and optionally Scrutor. Final selection is a Tech Spec decision.
 - **Performance**: no regression in request latency or startup time is acceptable.
@@ -197,7 +204,7 @@ Existing cross-cutting services move to `SharedKernel/` with their current behav
 ## Out of Scope
 
 - **Automated tests.** The project currently has no test suite; adding one is explicitly deferred to a future initiative. Verification is manual via Swagger/Postman.
-- **Changes to business logic or business rules.** Behavior observable to a client via a success response MUST be unchanged.
+- **Changes to business logic or business rules.** Business behavior observable to a client (the actual data, the JWT claims, the domain effects of a request) MUST be unchanged. Note: the **shape** of the success body is intentionally changed (wrapped in the `Result<T>` envelope) — that is a wire-contract change, not a business-logic change, and it is in scope.
 - **Database schema changes or new EF Core migrations.** Entities keep their current columns, relationships, and constraints. Data annotations used for EF mapping (e.g., `[Key]`, `[ForeignKey]`) are preserved; only validation annotations are removed.
 - **New endpoints or new product features.**
 - **Changes to the authentication scheme, role model, or JWT claims.**

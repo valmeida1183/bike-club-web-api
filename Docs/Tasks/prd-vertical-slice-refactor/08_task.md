@@ -49,8 +49,8 @@ must be reproduced byte-for-byte (the `<=` semantics are intentional).
 
 ## Success Criteria
 
-- All five routes behave identically on the happy path.
-- Query-string filters return the same filtered lists as before (verify with a couple of real filter combinations).
+- All five routes preserve route, verb, success status code. Success **bodies** are now the `Result<T>` envelope (the previously bare value lives at `response.value`); DELETE success is `204 NoContent` (no body).
+- Query-string filters return the same filtered lists at `response.value` as before (verify with a couple of real filter combinations).
 - `Controllers/BikeController.cs` gone.
 
 ## Task Tests
@@ -58,12 +58,12 @@ must be reproduced byte-for-byte (the `<=` semantics are intentional).
 - [ ] Unit tests — **N/A per PRD (out of scope).**
 - [ ] Integration tests — **N/A per PRD (out of scope).**
 - [ ] **Manual Verification**
-  - [ ] `GET /v1/bikes` → full list with nested `Category` and `Gender`.
-  - [ ] `GET /v1/bikes?price=2000&gears=21` → filtered subset matches today's output for the same query.
-  - [ ] `GET /v1/bikes/{id}` hit → 200 with nested includes; miss → 404 ProblemDetails.
-  - [ ] Cyclist: `POST /v1/bikes` → 403; Monitor: → 200.
-  - [ ] Monitor: `PUT /v1/bikes/1` with `{ "id": 2, ... }` → 400 `Bike.IdMismatch`.
-  - [ ] Monitor: `DELETE /v1/bikes/9999` → 404 ProblemDetails.
+  - [ ] `GET /v1/bikes` → 200 with `Result<…>` envelope; `response.value` is the full list with nested `Category` and `Gender`.
+  - [ ] `GET /v1/bikes?price=2000&gears=21` → `response.value` matches today's filtered subset for the same query.
+  - [ ] `GET /v1/bikes/{id}` hit → 200 Result envelope with nested includes at `response.value`; miss → 404 with `Result` envelope, `error.code: "Bike.NotFound"`.
+  - [ ] Cyclist: `POST /v1/bikes` → 403 (no body); Monitor: → 200 Result envelope.
+  - [ ] Monitor: `PUT /v1/bikes/1` with `{ "id": 2, ... }` → 400 with `error.code: "Bike.IdMismatch"`.
+  - [ ] Monitor: `DELETE /v1/bikes/9999` → 404 Result envelope; `DELETE /v1/bikes/{existingId}` → 204 NoContent (no body).
 
 <critical>ALWAYS CREATE AND EXECUTE TASK TESTS BEFORE CONSIDERING IT COMPLETED</critical>
 

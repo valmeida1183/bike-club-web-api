@@ -15,12 +15,13 @@ Migrate `AddressController` to `Features/Address/` across five operations. Simpl
 
 <requirements>
 - Create `Features/Address/` with operation folders: `GetAddress`, `GetAddressById`, `CreateAddress`, `UpdateAddress`, `DeleteAddress`.
+- All endpoints serialize the handler's `Result`/`Result<T>` envelope as the response body via `.ToIResult()`. No bare values, no ProblemDetails.
 - Routes and auth (preserve exactly):
-  - `GET v1/addresses` — `RequireAuthorization()`.
-  - `GET v1/addresses/{id:int}` — `RequireAuthorization()`. **Behavior improvement:** today returns 200 with `null` body when missing; post-migration must return 404 ProblemDetails via `Result.Failure(AddressErrors.NotFound)` (`ErrorType.NotFound`). Documented in techspec "Known Risks".
-  - `POST v1/addresses` — `RequireAuthorization()`.
-  - `PUT v1/addresses/{id:int}` — `RequireAuthorization()`. Preserve the "cannot change Id" rule as a handler-level check → `Result.Failure(AddressErrors.IdMismatch)` (`ErrorType.Validation` → 400).
-  - `DELETE v1/addresses/{id:int}` — `RequireAuthorization(new AuthorizeAttribute { Roles = RoleStatic.Monitor })`. Missing record → 404 (matches today).
+  - `GET v1/addresses` — `RequireAuthorization()`. Returns `Result<IReadOnlyList<AddressResponse>>` (success body has the list at `response.value`).
+  - `GET v1/addresses/{id:int}` — `RequireAuthorization()`. **Behavior improvement:** today returns 200 with `null` body when missing; post-migration must return 404 with the `Result` envelope via `Result.Failure(AddressErrors.NotFound)` (`ErrorType.NotFound`). Documented in techspec "Known Risks".
+  - `POST v1/addresses` — `RequireAuthorization()`. Returns `Result<AddressResponse>` on success.
+  - `PUT v1/addresses/{id:int}` — `RequireAuthorization()`. Preserve the "cannot change Id" rule as a handler-level check → `Result.Failure(AddressErrors.IdMismatch)` (`ErrorType.Validation` → 400 with the Result envelope body).
+  - `DELETE v1/addresses/{id:int}` — `RequireAuthorization(new AuthorizeAttribute { Roles = RoleStatic.Monitor })`. Handler returns non-generic `Result`; success → `204 NoContent` (no body), missing record → 404 with the Result envelope.
 - `CreateAddressValidator` and `UpdateAddressValidator`: mirror the existing data-annotation rules on the `Address` entity (Street 3..50, Complement 1..50, State 2..2, City 1..30, ZipCode required/non-zero). Since Create/Update share identical rules, centralize in `Features/Address/Shared/AddressRequestValidator.cs` and reuse from both.
 - `Features/Address/Shared/AddressErrors.cs`: `NotFound`, `IdMismatch`.
 - Delete `Controllers/AddressController.cs`.
@@ -39,14 +40,14 @@ Migrate `AddressController` to `Features/Address/` across five operations. Simpl
 
 ## Implementation Details
 
-See `techspec.md` → "Implementation Design → Main Interfaces" for the handler+endpoint template, and "API Endpoints" (address row) for the exact route and role table.
+See `techspec.md` → "Implementation Design → Main Interfaces" for the handler+endpoint template (including the `DeletePurchaseEndpoint` example showing `204 NoContent` on success for non-generic `Result`), and "API Endpoints" (address row) for the exact route and role table.
 
-Default-case `Result.Failure` with `ErrorType.Failure` is intentionally NOT used here — every expected failure is categorized so the HTTP adapter picks the right status code. Generic framework exceptions (DB uniqueness, concurrency) are handled by the `IExceptionHandler` chain from task 4.0.
+Default-case `Result.Failure` with `ErrorType.Failure` is intentionally NOT used here — every expected failure is categorized so the HTTP adapter picks the right status code. Generic framework exceptions (DB uniqueness, concurrency) are handled by the `IExceptionHandler` chain from task 4.0 (which also returns the Result envelope, not ProblemDetails).
 
 ## Success Criteria
 
-- All five routes behave identically to before on the happy path (same success payloads).
-- `GET v1/addresses/{id}` with an invalid id now returns 404 ProblemDetails (intentional improvement).
+- All five routes behave identically to before in terms of route, verb, and **success status code**. Success **body** is now the `Result<T>` envelope; the previously bare value lives at `response.value` (Delete is the exception — success returns `204 NoContent` with no body).
+- `GET v1/addresses/{id}` with an invalid id now returns 404 with the `Result` envelope (intentional improvement).
 - `Controllers/AddressController.cs` is gone.
 - Auto-registration picks up the five new endpoints without any change to `Program.cs`.
 
@@ -55,12 +56,12 @@ Default-case `Result.Failure` with `ErrorType.Failure` is intentionally NOT used
 - [ ] Unit tests — **N/A per PRD (out of scope).**
 - [ ] Integration tests — **N/A per PRD (out of scope).**
 - [ ] **Manual Verification**
-  - [ ] Cyclist token: `GET /v1/addresses` → 200, list. `POST /v1/addresses` with valid body → 200, created Address.
-  - [ ] Cyclist token: `DELETE /v1/addresses/{id}` → 403 (Monitor role required).
-  - [ ] Monitor token: `DELETE /v1/addresses/{id}` → 200 message, then `GET /v1/addresses/{id}` → 404 ProblemDetails.
-  - [ ] `POST /v1/addresses` with empty `City` → 400 ValidationProblem with `errors.City`.
-  - [ ] `PUT /v1/addresses/99` with body `{ "id": 100, … }` → 400 ProblemDetails, `code: "Address.IdMismatch"`.
-  - [ ] Unauthenticated: `GET /v1/addresses` → 401.
+  - [ ] Cyclist token: `GET /v1/addresses` → 200, body is `{ isSuccess: true, ..., value: [...] }`. `POST /v1/addresses` with valid body → 200 with `Result<AddressResponse>` envelope (`response.value` is the created Address).
+  - [ ] Cyclist token: `DELETE /v1/addresses/{id}` → 403 (no body — framework `Forbid()` does not produce one).
+  - [ ] Monitor token: `DELETE /v1/addresses/{id}` (existing) → 204 NoContent (no body); follow-up `GET /v1/addresses/{id}` → 404 with `Result` envelope (`error.code: "Address.NotFound"`, `error.type: "NotFound"`).
+  - [ ] `POST /v1/addresses` with empty `City` → 400 with the validation Result envelope: `{ isSuccess: false, errors: [{ code: "City", description: "...", type: "Validation" }, ...] }`.
+  - [ ] `PUT /v1/addresses/99` with body `{ "id": 100, … }` → 400 with `Result` envelope, `error.code: "Address.IdMismatch"`, `error.type: "Validation"`.
+  - [ ] Unauthenticated: `GET /v1/addresses` → 401 (no body — framework `Unauthorized()` does not produce one).
 
 <critical>ALWAYS CREATE AND EXECUTE TASK TESTS BEFORE CONSIDERING IT COMPLETED</critical>
 

@@ -17,7 +17,7 @@ Create the foundational folders (`SharedKernel/`, `Domain/`, `Extensions/`, `Inf
 - Create `SharedKernel/`, `Domain/Entities/`, `Extensions/`, `Infrastructure/ExceptionHandlers/` folders at project root.
 - Add `SharedKernel/IEndpoint.cs` with the exact signature from the `minimal-api` skill.
 - Add `SharedKernel/Results/` containing `Error.cs` (with `ErrorType` enum), `Result.cs` (`Result` and `Result<T>`), `ValidationResult.cs`, and `ResultExtensions.cs` following the `result-pattern` skill.
-- Add `SharedKernel/Http/ResultExtensions.cs` with `ToIResult()` / `ToIResult<T>(Func<T, IResult>? onSuccess = null)` that map `ErrorType` → `TypedResults.Problem` / `ValidationProblem` / `Ok` per the techspec "Integration Points → Error contract" section.
+- Add `SharedKernel/Http/ResultExtensions.cs` with `ToIResult()` (non-generic) / `ToIResult<T>(Func<Result<T>, IResult>? onSuccess = null)` that map `ErrorType` → `Results.BadRequest(result)` / `Results.NotFound(result)` / `Results.Conflict(result)` / `Results.Unauthorized()` / `Results.Forbid()`, and on success → `Results.Ok(result)` for `Result<T>` and `Results.NoContent()` for non-generic `Result` (override via the optional `onSuccess` factory). The Result object itself is the response body; **do NOT** unwrap to `result.Value`, **do NOT** use `TypedResults.Problem` or `TypedResults.ValidationProblem`. Status helpers that the framework does not allow a body for (`Unauthorized`, `Forbid`) carry status only. See techspec → "Integration Points → Response envelope" for the full mapping.
 - Add `FluentValidation` and `FluentValidation.DependencyInjectionExtensions` NuGet packages to `bike-club-api.csproj`. Do **not** wire validators up yet — that is task 4.0.
 - The project MUST still build (`dotnet build`) and run (`dotnet watch run`) with zero behavior change.
 </requirements>
@@ -30,7 +30,7 @@ Create the foundational folders (`SharedKernel/`, `Domain/`, `Extensions/`, `Inf
 - [ ] 1.4 Add `Result.cs` (base `Result` with `IsSuccess` / `IsFailure` / `Error` + factories, and `Result<T>` with `Value` accessor and implicit conversions).
 - [ ] 1.5 Add `ValidationResult.cs` (and `ValidationResult<T>`) aggregating multiple `Error[]`.
 - [ ] 1.6 Add `ResultExtensions.cs` (functional `Map`, `Bind`, `Tap`, `Match`, `Ensure`, `Combine` — see the `result-pattern` skill).
-- [ ] 1.7 Add `SharedKernel/Http/ResultExtensions.cs` with `ToIResult()` overloads that map `ErrorType` to `TypedResults`.
+- [ ] 1.7 Add `SharedKernel/Http/ResultExtensions.cs` with `ToIResult()` overloads that map `ErrorType` to `Results.BadRequest/NotFound/Conflict/Unauthorized/Forbid` (failures) and `Results.Ok(result)` / `Results.NoContent()` (success). The `Result`/`Result<T>` object is the response body — never unwrap to `result.Value`, never produce `ProblemDetails`.
 - [ ] 1.8 Add `FluentValidation` + `FluentValidation.DependencyInjectionExtensions` packages.
 - [ ] 1.9 Manual Verification.
 

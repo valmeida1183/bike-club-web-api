@@ -37,7 +37,7 @@ See `techspec.md` → "API Endpoints" (user row). Be careful with the `Put` beha
 
 ## Success Criteria
 
-- All four routes behave identically on the happy path.
+- All four routes preserve route, verb, success status code. Success bodies are the `Result<T>` envelope (the previously bare value is at `response.value`); failures are the Result envelope at the appropriate status.
 - `Controllers/UserController.cs` gone.
 
 ## Task Tests
@@ -45,11 +45,11 @@ See `techspec.md` → "API Endpoints" (user row). Be careful with the `Put` beha
 - [ ] Unit tests — **N/A per PRD (out of scope).**
 - [ ] Integration tests — **N/A per PRD (out of scope).**
 - [ ] **Manual Verification**
-  - [ ] Cyclist token: `GET /v1/users` → 200. `POST /v1/users` → 403.
-  - [ ] Monitor: `POST /v1/users` valid body → 200; inspect DB — `RoleName` is `"Monitor"` and `Password` is hashed (not the raw string sent).
-  - [ ] Monitor: `POST /v1/users` with invalid email → 400 ValidationProblem.
-  - [ ] Monitor: `PUT /v1/users/1` with body where `id = 2` → 400 `User.IdMismatch`.
-  - [ ] `GET /v1/users/9999` → 404 ProblemDetails (was 200 null before).
+  - [ ] Cyclist token: `GET /v1/users` → 200 Result envelope (`response.value` = list). `POST /v1/users` → 403 (no body).
+  - [ ] Monitor: `POST /v1/users` valid body → 200 with `Result<UserResponse>` envelope; inspect DB — `RoleName` is `"Monitor"` and `Password` is hashed (not the raw string sent).
+  - [ ] Monitor: `POST /v1/users` with invalid email → 400 with validation Result envelope (`errors[]` includes a `code: "Email"` entry).
+  - [ ] Monitor: `PUT /v1/users/1` with body where `id = 2` → 400 with `error.code: "User.IdMismatch"`, `error.type: "Validation"`.
+  - [ ] `GET /v1/users/9999` → 404 Result envelope, `error.code: "User.NotFound"` (was 200 null before).
 
 <critical>ALWAYS CREATE AND EXECUTE TASK TESTS BEFORE CONSIDERING IT COMPLETED</critical>
 

@@ -24,7 +24,7 @@ Final task. Delete the now-empty `Controllers/` folder, retire the legacy `Excep
   - Document FluentValidation usage (one validator per request record, invoked by the handler).
   - Document endpoint auto-registration (any `IEndpoint` is mapped automatically — no `Program.cs` edit needed).
   - Remove all references to `Controllers/`, root-level `Services/`, root-level `Static/`, root-level `Settings.cs`, and `Models/`.
-  - Add a brief note about the error response contract (RFC 7807 ProblemDetails).
+  - Add a brief note about the standardized response contract: every body-producing endpoint serializes the `Result`/`Result<T>` envelope (the success value lives at `response.value`); failures use the same envelope with `response.error`. `ProblemDetails` is **not** used. Endpoints whose verb conventionally returns no body emit `204 NoContent` on success but still return the Result envelope on failure.
 - Final end-to-end smoke test.
 </requirements>
 
@@ -49,7 +49,8 @@ Validation assertion: after this task, `grep -r "System.ComponentModel.DataAnnot
 - 0 `System.ComponentModel.DataAnnotations` validation attributes in `Domain/Entities/*`.
 - 100% of endpoints served by `Features/<Feature>/<Operation>/*Endpoint.cs` classes registered via `MapEndpoints()`.
 - `Program.cs` contains only extension calls + middleware + `app.Run()` — no inline service or middleware configuration.
-- All existing `/v1/` routes respond with identical success status codes and payloads.
+- All existing `/v1/` routes respond with identical success status codes and identical success **values** when read from the new envelope's `response.value`.
+- 0 references to `ProblemDetails` remain in the new pipeline (`grep` for `ProblemDetails`, `TypedResults.Problem`, `TypedResults.ValidationProblem`, `AddProblemDetails` returns no matches outside legacy/deleted code).
 - `CLAUDE.md` no longer references `Controllers/`, `Models/`, root `Services/`, `Static/`, or root `Settings.cs`.
 
 ## Task Tests
@@ -63,7 +64,7 @@ Validation assertion: after this task, `grep -r "System.ComponentModel.DataAnnot
   - [ ] Full ShopCart flow: `GET/POST/PATCH address/add-purchase/update-purchase/remove-purchase`.
   - [ ] Anonymous `GET /v1/genders`, `GET /v1/categories`, `GET /v1/difficulties` — confirm `Cache-Control` / `Vary: User-Agent` still present.
   - [ ] `GET /Resources/Images/<seeded image>` returns the file.
-  - [ ] Swagger UI at `https://localhost:5001/swagger` renders, lists every route, and the schemas for ProblemDetails responses appear for error responses.
+  - [ ] Swagger UI at `https://localhost:5001/swagger` renders, lists every route, and the schemas for `Result`/`Result<T>` and the validation Result envelope appear for the success and failure response examples (no ProblemDetails schema is referenced).
   - [ ] `dotnet build` → 0 errors, 0 warnings related to the refactor.
   - [ ] Grep repo for `BikeClub.Controllers`, `BikeClub.Models`, `BikeClub.Static`, `BikeClub.Services` — zero matches.
 
