@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace BikeClub.Models
+namespace BikeClub.Domain.Entities
 {
     public class Bike
     {

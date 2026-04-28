@@ -1,4 +1,4 @@
-namespace BikeClub.Static
+namespace BikeClub.SharedKernel.Static
 {
     public static class GenderStatic
     {

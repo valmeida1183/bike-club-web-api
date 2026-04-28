@@ -1,5 +1,5 @@
-using BikeClub.Models;
-using BikeClub.Static;
+using BikeClub.Domain.Entities;
+using BikeClub.SharedKernel.Static;
 using Microsoft.EntityFrameworkCore;
 
 namespace BikeClub.Data.Seed

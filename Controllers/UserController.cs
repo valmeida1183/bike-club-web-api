@@ -1,7 +1,8 @@
 using BikeClub.Data;
-using BikeClub.Models;
+using BikeClub.Domain.Entities;
 using BikeClub.Services;
-using BikeClub.Static;
+using BikeClub.SharedKernel.Services;
+using BikeClub.SharedKernel.Static;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,10 +14,14 @@ namespace BikeClub.Controllers
     public class UserController : ControllerBase
     {
         private readonly DataContext context;
+        private readonly ICryptographerService cryptographerService;
 
-        public UserController(DataContext context)
+        public UserController(
+            DataContext context,
+            ICryptographerService cryptographerService)
         {
             this.context = context;
+            this.cryptographerService = cryptographerService;
         }
 
         [HttpGet]
@@ -45,7 +50,7 @@ namespace BikeClub.Controllers
             try
             {
                 model.RoleName = RoleStatic.Monitor;
-                model.Password = CryptographerService.Hash(model.Password);
+                model.Password = cryptographerService.Hash(model.Password);
 
                 context.Users.Add(model);
                 await context.SaveChangesAsync();

@@ -1,7 +1,9 @@
 using BikeClub.Data;
-using BikeClub.Models;
+using BikeClub.Domain.Entities;
 using BikeClub.Services;
-using BikeClub.Static;
+using BikeClub.SharedKernel;
+using BikeClub.SharedKernel.Services;
+using BikeClub.SharedKernel.Static;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,10 +15,17 @@ namespace BikeClub.Controllers
     public class AccountController : ControllerBase
     {
         private readonly DataContext context;
+        private readonly ITokenService tokenService;
+        private readonly ICryptographerService cryptographerService;
 
-        public AccountController(DataContext context)
+        public AccountController(
+            DataContext context,
+            ITokenService tokenService,
+            ICryptographerService cryptographerService)
         {
             this.context = context;
+            this.tokenService = tokenService;
+            this.cryptographerService = cryptographerService;
         }
 
         [HttpPost("login")]
@@ -30,7 +39,7 @@ namespace BikeClub.Controllers
                 return BadRequest(new { message = "Invalid Email or Password" });
             }
 
-            var hashPassword = CryptographerService.Hash(model.Password);
+            var hashPassword = cryptographerService.Hash(model.Password);
 
             var user = await context.Users
                 .AsNoTracking()
@@ -45,7 +54,7 @@ namespace BikeClub.Controllers
             //Esconde a senha
             user.Password = "***********";
 
-            var token = TokenService.GenerateToken(user);
+            var token = tokenService.GenerateToken(user);
             var expiresIn = DateTime.UtcNow.AddHours(Settings.TokenExpirationHours);
 
             return Ok(new { user = user, token = token, expiresIn = expiresIn });
@@ -71,7 +80,7 @@ namespace BikeClub.Controllers
             {
                 // Força o user a ser um ciclista
                 model.RoleName = RoleStatic.Cyclist;
-                model.Password = CryptographerService.Hash(model.Password);
+                model.Password = cryptographerService.Hash(model.Password);
 
                 // Cria o carrinho de compras vazio para o usuário
                 var shopCart = new ShopCart
@@ -89,7 +98,7 @@ namespace BikeClub.Controllers
                 //Esconde a senha
                 model.Password = "***********";
 
-                var token = TokenService.GenerateToken(model);
+                var token = tokenService.GenerateToken(model);
                 var expiresIn = DateTime.UtcNow.AddHours(Settings.TokenExpirationHours);
 
                 return Ok(new { user = model, token = token, expiresIn = expiresIn });

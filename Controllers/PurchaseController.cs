@@ -1,5 +1,5 @@
 using BikeClub.Data;
-using BikeClub.Models;
+using BikeClub.Domain.Entities;
 using BikeClub.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

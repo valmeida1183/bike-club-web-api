@@ -1,4 +1,4 @@
-namespace BikeClub.Models
+namespace BikeClub.Domain.Entities
 {
     public class TourParticipant
     {

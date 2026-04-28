@@ -1,7 +1,8 @@
 using System.Text;
 using System.Text.Json.Serialization;
-using BikeClub;
 using BikeClub.Data;
+using BikeClub.SharedKernel;
+using BikeClub.SharedKernel.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
@@ -17,6 +18,7 @@ ConfigureCORS(builder);
 ConfigureControllers(builder);
 ConfigureDataContext(builder);
 ConfigureSwagger(builder);
+ConfigureCrossCuttingServices(builder);
 
 var app = builder.Build();
 
@@ -124,6 +126,12 @@ void ConfigureSwagger(WebApplicationBuilder builder)
                 Version = "v1"
             });
         });
+}
+
+void ConfigureCrossCuttingServices(WebApplicationBuilder builder)
+{
+    builder.Services.AddScoped<ITokenService, TokenService>();
+    builder.Services.AddScoped<ICryptographerService, CryptographerService>();
 }
 
 void LoadSettings(WebApplication app)

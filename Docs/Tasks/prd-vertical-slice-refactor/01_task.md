@@ -24,15 +24,15 @@ Create the foundational folders (`SharedKernel/`, `Domain/`, `Extensions/`, `Inf
 
 ## Subtasks
 
-- [ ] 1.1 Create the four new folders and a placeholder `.gitkeep` only where needed to keep them tracked.
-- [ ] 1.2 Add `IEndpoint.cs` under `SharedKernel/` (no consumers yet).
-- [ ] 1.3 Add `Error.cs` with the `ErrorType` enum (`Failure`, `Validation`, `NotFound`, `Conflict`, `Unauthorized`, `Forbidden`) and `Error.None` / `Error.NullValue` sentinels.
-- [ ] 1.4 Add `Result.cs` (base `Result` with `IsSuccess` / `IsFailure` / `Error` + factories, and `Result<T>` with `Value` accessor and implicit conversions).
-- [ ] 1.5 Add `ValidationResult.cs` (and `ValidationResult<T>`) aggregating multiple `Error[]`.
-- [ ] 1.6 Add `ResultExtensions.cs` (functional `Map`, `Bind`, `Tap`, `Match`, `Ensure`, `Combine` — see the `result-pattern` skill).
-- [ ] 1.7 Add `SharedKernel/Http/ResultExtensions.cs` with `ToIResult()` overloads that map `ErrorType` to `Results.BadRequest/NotFound/Conflict/Unauthorized/Forbid` (failures) and `Results.Ok(result)` / `Results.NoContent()` (success). The `Result`/`Result<T>` object is the response body — never unwrap to `result.Value`, never produce `ProblemDetails`.
-- [ ] 1.8 Add `FluentValidation` + `FluentValidation.DependencyInjectionExtensions` packages.
-- [ ] 1.9 Manual Verification.
+- [x] 1.1 Create the four new folders and a placeholder `.gitkeep` only where needed to keep them tracked.
+- [x] 1.2 Add `IEndpoint.cs` under `SharedKernel/` (no consumers yet).
+- [x] 1.3 Add `Error.cs` with the `ErrorType` enum (`Failure`, `Validation`, `NotFound`, `Conflict`, `Unauthorized`, `Forbidden`) and `Error.None` / `Error.NullValue` sentinels.
+- [x] 1.4 Add `Result.cs` (base `Result` with `IsSuccess` / `IsFailure` / `Error` + factories, and `Result<T>` with `Value` accessor and implicit conversions).
+- [x] 1.5 Add `ValidationResult.cs` (and `ValidationResult<T>`) aggregating multiple `Error[]`.
+- [x] 1.6 Add `ResultExtensions.cs` (functional `Map`, `Bind`, `Tap`, `Match`, `Ensure`, `Combine` — see the `result-pattern` skill).
+- [x] 1.7 Add `SharedKernel/Http/ResultExtensions.cs` with `ToIResult()` overloads that map `ErrorType` to `Results.BadRequest/NotFound/Conflict/Unauthorized/Forbid` (failures) and `Results.Ok(result)` / `Results.NoContent()` (success). The `Result`/`Result<T>` object is the response body — never unwrap to `result.Value`, never produce `ProblemDetails`.
+- [x] 1.8 Add `FluentValidation` + `FluentValidation.DependencyInjectionExtensions` packages.
+- [x] 1.9 Manual Verification.
 
 ## Implementation Details
 
@@ -50,10 +50,10 @@ Do **not** move `Models/`, `Services/`, `Static/`, or `Settings.cs` yet — that
 
 - [ ] Unit tests — **N/A per PRD (out of scope).**
 - [ ] Integration tests — **N/A per PRD (out of scope).**
-- [ ] **Manual Verification**
-  - [ ] `dotnet build` completes with no errors.
-  - [ ] `dotnet watch run` starts; Swagger UI at `https://localhost:5001/swagger` still lists all existing endpoints.
-  - [ ] Smoke: `GET /v1/genders` (anon), `POST /v1/accounts/login` (with a seeded user) still return the same responses as before.
+- [x] **Manual Verification**
+  - [x] `dotnet build` completes with no errors.
+  - [x] `dotnet watch run` starts; Swagger UI at `https://localhost:5001/swagger` still lists all existing endpoints.
+  - [x] Smoke: `GET /v1/genders` (anon), `POST /v1/accounts/login` (with a seeded user) still return the same responses as before.
 
 <critical>ALWAYS CREATE AND EXECUTE TASK TESTS BEFORE CONSIDERING IT COMPLETED</critical>
 

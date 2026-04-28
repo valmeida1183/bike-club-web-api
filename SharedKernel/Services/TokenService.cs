@@ -1,14 +1,14 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using BikeClub.Models;
+using BikeClub.Domain.Entities;
 using Microsoft.IdentityModel.Tokens;
 
-namespace BikeClub.Services
+namespace BikeClub.SharedKernel.Services
 {
-    public static class TokenService
+    public class TokenService : ITokenService
     {
-        public static string GenerateToken(User user)
+        public string GenerateToken(User user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var secret = Settings.Secret;
@@ -25,7 +25,7 @@ namespace BikeClub.Services
                 {
                     new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                     new Claim(ClaimTypes.Name, user.Name),
-                    new Claim(ClaimTypes.Role, user.RoleName)
+                    new Claim(ClaimTypes.Role, user.RoleName ?? string.Empty)
                 }),
                 Expires = DateTime.UtcNow.AddHours(Settings.TokenExpirationHours),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)

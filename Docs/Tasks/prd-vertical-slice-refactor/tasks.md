@@ -8,8 +8,8 @@
 
 ### Foundation (no client-visible behavior change)
 
-- [ ] 1.0 SharedKernel & Result Pattern Foundation
-- [ ] 2.0 Relocate Cross-Cutting Code (Models → Domain/Entities, Static/Settings/Services → SharedKernel)
+- [x] 1.0 SharedKernel & Result Pattern Foundation
+- [x] 2.0 Relocate Cross-Cutting Code (Models → Domain/Entities, Static/Settings/Services → SharedKernel)
 - [ ] 3.0 Extract `Program.cs` to Extension Methods
 - [ ] 4.0 Endpoint Auto-Registration, FluentValidation & Exception Handling Wiring
 

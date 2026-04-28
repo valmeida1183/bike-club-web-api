@@ -1,7 +1,7 @@
 using BikeClub.Data;
-using BikeClub.Models;
+using BikeClub.Domain.Entities;
 using BikeClub.Services;
-using BikeClub.Static;
+using BikeClub.SharedKernel.Static;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

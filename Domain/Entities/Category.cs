@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace BikeClub.Models
+namespace BikeClub.Domain.Entities
 {
-    public class Difficulty
+    public class Category
     {
         public int Id { get; set; }
 

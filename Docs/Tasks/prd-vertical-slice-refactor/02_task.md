@@ -27,15 +27,15 @@ Move `Models/` → `Domain/Entities/`, move `Settings.cs` + `Static/*` + `TokenS
 
 ## Subtasks
 
-- [ ] 2.1 Move `Models/*.cs` → `Domain/Entities/` and update each file's namespace. Update all `using BikeClub.Models;` references across the codebase (controllers, Data/, Services/).
-- [ ] 2.2 Move `Settings.cs` → `SharedKernel/Settings.cs`; update all `using BikeClub;` references that resolve to `Settings`.
-- [ ] 2.3 Move `Static/*` → `SharedKernel/Static/`; update `using BikeClub.Static;` references.
-- [ ] 2.4 Introduce `ITokenService` + `TokenService` under `SharedKernel/Services/`; remove the static class; update `AccountController` and `UserController` (and any other consumer) to inject `ITokenService`.
-- [ ] 2.5 Introduce `ICryptographerService` + `CryptographerService` under `SharedKernel/Services/` (fix filename typo); update `AccountController` and `UserController` to inject `ICryptographerService`.
-- [ ] 2.6 Register both services as scoped in `Program.cs` (temporary — task 3.0 will move this into `ConfigureServices` extension).
-- [ ] 2.7 Update `Data/DataContext.cs`, `Data/Configurations/*`, `Data/Seed/*`, `Data/Extensions/ModelBuilderExtensions.cs` to new namespaces.
-- [ ] 2.8 Delete now-empty `Models/`, `Services/` (except `ExceptionHandlerService.cs` — removed in task 13.0), `Static/`, and root `Settings.cs`.
-- [ ] 2.9 Manual Verification.
+- [x] 2.1 Move `Models/*.cs` → `Domain/Entities/` and update each file's namespace. Update all `using BikeClub.Models;` references across the codebase (controllers, Data/, Services/).
+- [x] 2.2 Move `Settings.cs` → `SharedKernel/Settings.cs`; update all `using BikeClub;` references that resolve to `Settings`.
+- [x] 2.3 Move `Static/*` → `SharedKernel/Static/`; update `using BikeClub.Static;` references.
+- [x] 2.4 Introduce `ITokenService` + `TokenService` under `SharedKernel/Services/`; remove the static class; update `AccountController` and `UserController` (and any other consumer) to inject `ITokenService`.
+- [x] 2.5 Introduce `ICryptographerService` + `CryptographerService` under `SharedKernel/Services/` (fix filename typo); update `AccountController` and `UserController` to inject `ICryptographerService`.
+- [x] 2.6 Register both services as scoped in `Program.cs` (temporary — task 3.0 will move this into `ConfigureServices` extension).
+- [x] 2.7 Update `Data/DataContext.cs`, `Data/Configurations/*`, `Data/Seed/*`, `Data/Extensions/ModelBuilderExtensions.cs` to new namespaces.
+- [x] 2.8 Delete now-empty `Models/`, `Services/` (except `ExceptionHandlerService.cs` — removed in task 13.0), `Static/`, and root `Settings.cs`.
+- [x] 2.9 Manual Verification.
 
 ## Implementation Details
 
@@ -54,12 +54,12 @@ See `techspec.md` → "System Architecture → Component Overview" (Modified com
 
 - [ ] Unit tests — **N/A per PRD (out of scope).**
 - [ ] Integration tests — **N/A per PRD (out of scope).**
-- [ ] **Manual Verification**
-  - [ ] `dotnet build` completes with zero errors.
-  - [ ] `POST /v1/accounts/login` with a seeded user returns the same `{ user, token, expiresIn }` body and a valid JWT.
-  - [ ] `POST /v1/accounts/register` with a new email succeeds and returns a token.
-  - [ ] `GET /v1/users` (as Monitor) returns the user list unchanged.
-  - [ ] Decode the issued JWT and confirm the `NameIdentifier`, `Name`, and `Role` claims match pre-refactor output.
+- [x] **Manual Verification**
+  - [x] `dotnet build` completes with zero errors.
+  - [x] `POST /v1/accounts/login` with a seeded user returns the same `{ user, token, expiresIn }` body and a valid JWT.
+  - [x] `POST /v1/accounts/register` with a new email succeeds and returns a token.
+  - [x] `GET /v1/users` (as Monitor) returns the user list unchanged.
+  - [x] Decode the issued JWT and confirm the `NameIdentifier`, `Name`, and `Role` claims match pre-refactor output.
 
 <critical>ALWAYS CREATE AND EXECUTE TASK TESTS BEFORE CONSIDERING IT COMPLETED</critical>
 

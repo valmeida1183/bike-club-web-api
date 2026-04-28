@@ -1,7 +1,7 @@
 
 using System.ComponentModel.DataAnnotations;
 
-namespace BikeClub.Models
+namespace BikeClub.Domain.Entities
 {
     public class Role
     {

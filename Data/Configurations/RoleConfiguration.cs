@@ -1,4 +1,4 @@
-using BikeClub.Models;
+using BikeClub.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

@@ -1,4 +1,4 @@
-namespace BikeClub
+namespace BikeClub.SharedKernel
 {
     public static class Settings
     {
