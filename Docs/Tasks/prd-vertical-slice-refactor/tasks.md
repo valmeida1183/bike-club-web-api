@@ -11,7 +11,7 @@
 - [x] 1.0 SharedKernel & Result Pattern Foundation
 - [x] 2.0 Relocate Cross-Cutting Code (Models → Domain/Entities, Static/Settings/Services → SharedKernel)
 - [x] 3.0 Extract `Program.cs` to Extension Methods
-- [ ] 4.0 Endpoint Auto-Registration, FluentValidation & Exception Handling Wiring
+- [x] 4.0 Endpoint Auto-Registration, FluentValidation & Exception Handling Wiring
 
 ### Feature slices (each deletes its controller on completion)
 
