@@ -17,7 +17,7 @@
 
 - [x] 5.0 Account Feature Slice (Login, Register)
 - [x] 6.0 Address Feature Slice
-- [ ] 7.0 Lookup Features Slice (Category, Difficulty, Gender, Role)
+- [x] 7.0 Lookup Features Slice (Category, Difficulty, Gender, Role)
 - [ ] 8.0 Bike Feature Slice
 - [ ] 9.0 Tour Feature Slice
 - [ ] 10.0 User Feature Slice
