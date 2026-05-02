@@ -47,10 +47,10 @@ internal sealed class LoginHandler
         if (user is null)
             return AccountErrors.InvalidCredentials;
 
-        user.Password = "***********";
-
+        _db.Entry(user).State = EntityState.Detached;
         var token = _tokenService.GenerateToken(user);
         var expiresIn = DateTime.UtcNow.AddHours(Settings.TokenExpirationHours);
+        user.Password = "***********";
 
         return new LoginResponse(user, token, expiresIn);
     }
