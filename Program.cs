@@ -10,6 +10,7 @@ builder.ConfigureSwagger();
 builder.ConfigureOutputCache();
 builder.ConfigureServices();
 builder.Services.AddEndpoints();
+builder.Services.AddHandlers();
 builder.Services.AddFluentValidation();
 builder.Services.AddGlobalExceptionHandling();
 

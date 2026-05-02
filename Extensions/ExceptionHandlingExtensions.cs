@@ -15,7 +15,7 @@ public static class ExceptionHandlingExtensions
 
     public static WebApplication UseGlobalExceptionHandling(this WebApplication app)
     {
-        app.UseExceptionHandler();
+        app.UseExceptionHandler(_ => { });
 
         return app;
     }

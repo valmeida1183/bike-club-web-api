@@ -23,8 +23,9 @@ Migration is incremental: the foundation (SharedKernel, Extensions, Domain, Resu
 - `SharedKernel/Services/{TokenService.cs, CryptographerService.cs}` — relocated from root `Services/` (unchanged behavior; now registered as scoped services instead of static classes).
 - `SharedKernel/Static/{RoleStatic.cs, GenderStatic.cs}` — relocated from root `Static/`.
 - `SharedKernel/Settings.cs` — relocated from root (unchanged; remains a static holder loaded at startup via `LoadSettings`).
-- `Extensions/*` — one class per configuration concern (Authentication, Compression, CORS, DataContext, Swagger, LoadSettings, AddEndpoints, AddFluentValidation, AddExceptionHandlers).
-- `Extensions/EndpointExtensions.cs` — `AddEndpoints(this IServiceCollection)` (reflection scan) + `MapEndpoints(this WebApplication)`.
+- `Extensions/*` — one class per configuration concern (Authentication, Compression, CORS, DataContext, Swagger, LoadSettings, AddEndpoints, AddHandlers, AddFluentValidation, AddExceptionHandlers).
+- `Extensions/EndpointExtensions.cs` — `AddEndpoints(this IServiceCollection)` (reflection scan for `IEndpoint` types) + `MapEndpoints(this WebApplication)`.
+- `Extensions/HandlerExtensions.cs` — `AddHandlers(this IServiceCollection)` scans `BikeClub.Features.*` for non-abstract types whose name ends in `Handler` and registers each as `AddScoped`.
 - `Infrastructure/ExceptionHandlers/*` — `UniqueConstraintExceptionHandler`, `ConcurrencyExceptionHandler`, `GlobalExceptionHandler` implementing `IExceptionHandler`.
 - `Features/<Feature>/<Operation>/*` — per-operation slice files.
 - `Features/<Feature>/Shared/*` — optional feature-local shared logic (e.g., `ShopCart.CalculateTotalAmount`).
@@ -206,6 +207,7 @@ Each becomes one `IEndpoint` class under `Features/<Feature>/<Operation>/`. Succ
 - **Exception handling (envelope-consistent)**: `Infrastructure/ExceptionHandlers/UniqueConstraintExceptionHandler` inspects `DbUpdateException` for SQL error numbers 2601/2627 (preserving the current `ExceptionHandlerService` logic) and writes a 409 with a `Result.Failure(InfrastructureErrors.UniqueConstraint)` (`ErrorType.Conflict`) body — same envelope shape as a handler-returned failure. `ConcurrencyExceptionHandler` handles `DbUpdateConcurrencyException` as 400 with `Result.Failure(InfrastructureErrors.Concurrency)`. `GlobalExceptionHandler` covers the rest as 500 with `Result.Failure(InfrastructureErrors.Unexpected)`. All are registered via `services.AddExceptionHandler<T>()` + `app.UseExceptionHandler()`. `Infrastructure/ExceptionHandlers/InfrastructureErrors.cs` defines the canonical `Error` instances. `AddProblemDetails()` is **not** registered. The old static `ExceptionHandlerService` is deleted after the last feature migrates.
 - **FluentValidation registration**: `AddValidatorsFromAssemblyContaining<Program>()` in `Extensions/ValidationExtensions.cs`. Validators are scoped. Handlers resolve them via constructor injection as `IValidator<TRequest>`.
 - **Endpoint auto-registration**: `Extensions/EndpointExtensions.cs` scans `typeof(Program).Assembly` for non-abstract types implementing `IEndpoint`, registers each as `AddSingleton(typeof(IEndpoint), t)`. `MapEndpoints(this WebApplication app)` resolves `IEnumerable<IEndpoint>` and invokes `MapEndpoint(app)` on each. Scrutor is not used (see Decisions).
+- **Handler auto-registration**: `Extensions/HandlerExtensions.cs` (`AddHandlers`) scans `BikeClub.Features.*` for non-abstract types whose name ends in `Handler` and registers each as `AddScoped`. The `BikeClub.Features.` namespace prefix (with trailing dot) prevents accidental pickup of infrastructure types such as the `IExceptionHandler` implementations in `Infrastructure/ExceptionHandlers/`.
 
 ## Testing Approach
 

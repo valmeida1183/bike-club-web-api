@@ -11,9 +11,7 @@ public static class EndpointExtensions
             .Where(t => typeof(IEndpoint).IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract);
 
         foreach (var endpointType in endpointTypes)
-        {
             services.AddSingleton(typeof(IEndpoint), endpointType);
-        }
 
         return services;
     }

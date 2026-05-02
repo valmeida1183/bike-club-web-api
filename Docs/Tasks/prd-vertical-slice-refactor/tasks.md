@@ -15,7 +15,7 @@
 
 ### Feature slices (each deletes its controller on completion)
 
-- [ ] 5.0 Account Feature Slice (Login, Register)
+- [x] 5.0 Account Feature Slice (Login, Register)
 - [ ] 6.0 Address Feature Slice
 - [ ] 7.0 Lookup Features Slice (Category, Difficulty, Gender, Role)
 - [ ] 8.0 Bike Feature Slice

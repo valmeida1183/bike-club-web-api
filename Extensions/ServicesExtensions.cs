@@ -13,6 +13,11 @@ public static class ServicesExtensions
                 options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
             });
 
+        builder.Services.ConfigureHttpJsonOptions(options =>
+        {
+            options.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+        });
+
         builder.Services.AddScoped<ITokenService, TokenService>();
         builder.Services.AddScoped<ICryptographerService, CryptographerService>();
 
