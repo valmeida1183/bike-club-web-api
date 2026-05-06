@@ -1,6 +1,7 @@
 using BikeClub.Data;
-using BikeClub.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using ShopCartEntity = BikeClub.Domain.Entities.ShopCart;
+using UserEntity = BikeClub.Domain.Entities.User;
 using BikeClub.Features.Account.Shared;
 using BikeClub.SharedKernel;
 using BikeClub.SharedKernel.Results;
@@ -42,7 +43,7 @@ internal sealed class RegisterHandler
         if (emailExists)
             return AccountErrors.EmailAlreadyExists;
 
-        var user = new User
+        var user = new UserEntity
         {
             Email = request.Email,
             Password = _cryptographer.Hash(request.Password),
@@ -53,7 +54,7 @@ internal sealed class RegisterHandler
             RoleName = RoleStatic.Cyclist
         };
 
-        var shopCart = new ShopCart
+        var shopCart = new ShopCartEntity
         {
             UserId = user.Id,
             PurchaseDate = DateTimeOffset.UtcNow,
