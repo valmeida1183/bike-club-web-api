@@ -4,7 +4,9 @@
 
 ## Overview
 
-Migrate `PurchaseController`. Two operations: `CreatePurchase` (POST — with upsert-on-existing semantics) and `DeletePurchase` (DELETE). Note the unusual upsert behavior on POST: if a Purchase already exists for the same `(ShopCartId, BikeId)`, the handler increments its `Quantity` instead of inserting a duplicate. Preserve that exactly.
+Migrate `PurchaseController`. One operation migrated: `CreatePurchase` (POST — with upsert-on-existing semantics). Note the unusual upsert behavior on POST: if a Purchase already exists for the same `(ShopCartId, BikeId)`, the handler increments its `Quantity` instead of inserting a duplicate. Preserve that exactly.
+
+> **Scope amendment (decided during implementation):** `DeletePurchase` (`DELETE /v1/purchases/{id:int}`) was **not migrated and the route was dropped**. Reason: `Purchase` has a composite PK `(BikeId, ShopCartId)` with no single `int Id` field. The original `FindAsync(id)` with one int on a two-part composite key throws `InvalidOperationException` at runtime — the endpoint never worked. The ShopCart slice already covers purchase removal via `DELETE /v1/shop-carts/remove-purchase/{shopCartId}/{bikeId}`. Team decision: drop the broken route rather than invent a new composite-key route under the Purchase prefix.
 
 <skills>
 ### Compliance with Standard Skills
@@ -19,19 +21,16 @@ Migrate `PurchaseController`. Two operations: `CreatePurchase` (POST — with up
     - If found: increment `Quantity += request.Quantity`, `context.Purchases.Update(existing)`, save, return `Result.Success(updatedPurchase)`.
     - If not: `context.Purchases.Add(new)`, save, return `Result.Success(newPurchase)`.
   - Success **value** matches today's `currentPurchase ?? purchase` body, now nested at `response.value` of the `Result<PurchaseResponse>` envelope.
-- `Features/Purchase/DeletePurchase/` — `DELETE v1/purchases/{id:int}`, `RequireAuthorization()`. Handler returns non-generic `Result`.
-  - If not found → `Result.Failure(PurchaseErrors.NotFound)` (`ErrorType.NotFound`) → 404 with the Result envelope (today returns bare `NotFound()` — the new behavior is a 404 with the Result envelope, which is the PRD-sanctioned response contract change).
-  - On success: handler returns `Result.Success()`; endpoint returns `204 NoContent` (no body). Today's `Ok(new { message = "Purchase removed with success." })` body is dropped because the verb does not produce a body under the new convention. If the team requires preserving the message, override the endpoint with `.ToIResult(onSuccess: r => Results.Ok(r))` and switch the handler to `Result<DeletePurchaseResponse>` carrying the message — explicit per-task decision.
-- Shared `PurchaseErrors.cs` with `NotFound`.
+- ~~`Features/Purchase/DeletePurchase/`~~ — **dropped** (see scope amendment above; route was non-functional in the original).
 - Delete `Controllers/PurchaseController.cs`.
 </requirements>
 
 ## Subtasks
 
-- [ ] 11.1 Shared errors + validator.
-- [ ] 11.2 `CreatePurchase` (upsert logic).
-- [ ] 11.3 `DeletePurchase`.
-- [ ] 11.4 Delete `Controllers/PurchaseController.cs`.
+- [x] 11.1 Validator.
+- [x] 11.2 `CreatePurchase` (upsert logic).
+- [x] ~~11.3 `DeletePurchase`~~ — dropped (scope amendment).
+- [x] 11.4 Delete `Controllers/PurchaseController.cs`.
 - [ ] 11.5 Manual Verification.
 
 ## Implementation Details
@@ -40,8 +39,9 @@ See `techspec.md` → "API Endpoints" (purchases row). The upsert logic uses `As
 
 ## Success Criteria
 
-- Two routes migrated; `Controllers/PurchaseController.cs` gone.
+- `POST /v1/purchases` migrated; `Controllers/PurchaseController.cs` gone.
 - Upsert semantics preserved: repeated POSTs with identical `(ShopCartId, BikeId)` increment quantity, not insert.
+- `DELETE /v1/purchases/{id}` intentionally dropped (see scope amendment).
 
 ## Task Tests
 
@@ -52,8 +52,8 @@ See `techspec.md` → "API Endpoints" (purchases row). The upsert logic uses `As
   - [ ] Same POST again → 200, `response.value.quantity` is 4 (incremented, not duplicated).
   - [ ] Verify in DB: only one row for `(X, Y)` exists after both calls.
   - [ ] `POST /v1/purchases` with invalid body (e.g., missing bikeId) → 400 with validation Result envelope (`errors[]` populated).
-  - [ ] `DELETE /v1/purchases/{existingId}` → 204 NoContent (no body, per new convention).
-  - [ ] `DELETE /v1/purchases/9999` → 404 with Result envelope, `error.code: "Purchase.NotFound"`, `error.type: "NotFound"`.
+  - ~~`DELETE /v1/purchases/{existingId}`~~ — dropped (scope amendment).
+  - ~~`DELETE /v1/purchases/9999`~~ — dropped (scope amendment).
 
 <critical>ALWAYS CREATE AND EXECUTE TASK TESTS BEFORE CONSIDERING IT COMPLETED</critical>
 

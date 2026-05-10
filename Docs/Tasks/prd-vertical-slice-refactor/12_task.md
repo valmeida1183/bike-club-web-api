@@ -27,14 +27,14 @@ Migrate `ShopCartController` — the most complex feature. Six operations with n
 
 ## Subtasks
 
-- [ ] 12.1 Create `Features/ShopCart/Shared/` with `ShopCartErrors.cs` and `TotalAmountCalculator.cs` (+ interface). Register DI.
-- [ ] 12.2 `GetShopCartByUserId`.
-- [ ] 12.3 `CreateShopCart`.
-- [ ] 12.4 `AddPurchaseToShopCart` (upsert + recompute total).
-- [ ] 12.5 `UpdatePurchaseInShopCart` (recompute total).
-- [ ] 12.6 `SetShopCartAddress` (preserve quirky address.Id behavior).
-- [ ] 12.7 `RemovePurchaseFromShopCart` (recompute total).
-- [ ] 12.8 Delete `Controllers/ShopCartController.cs`.
+- [x] 12.1 Create `Features/ShopCart/Shared/` with `ShopCartErrors.cs` and `TotalAmountCalculator.cs` (+ interface). Register DI.
+- [x] 12.2 `GetShopCartByUserId`.
+- [x] 12.3 `CreateShopCart`.
+- [x] 12.4 `AddPurchaseToShopCart` (upsert + recompute total).
+- [x] 12.5 `UpdatePurchaseInShopCart` (recompute total).
+- [x] 12.6 `SetShopCartAddress` (preserve quirky address.Id behavior).
+- [x] 12.7 `RemovePurchaseFromShopCart` (recompute total).
+- [x] 12.8 Delete `Controllers/ShopCartController.cs`.
 - [ ] 12.9 Manual Verification.
 
 ## Implementation Details
