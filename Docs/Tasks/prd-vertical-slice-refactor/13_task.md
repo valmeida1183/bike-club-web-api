@@ -30,11 +30,11 @@ Final task. Delete the now-empty `Controllers/` folder, retire the legacy `Excep
 
 ## Subtasks
 
-- [ ] 13.1 Delete `Controllers/` folder.
-- [ ] 13.2 Delete `Services/ExceptionHandlerService.cs` (and the `Services/` folder if empty).
-- [ ] 13.3 Remove `AddControllers` and `MapControllers` from `Program.cs` / extensions; replace the `ReferenceHandler.IgnoreCycles` JSON option with `ConfigureHttpJsonOptions` in a new `Extensions/JsonExtensions.cs`.
-- [ ] 13.4 Strip validation `DataAnnotations` from every file in `Domain/Entities/`. Remove now-unused `using System.ComponentModel.DataAnnotations;`.
-- [ ] 13.5 Update `CLAUDE.md` per the requirements above.
+- [x] 13.1 Delete `Controllers/` folder.
+- [x] 13.2 Delete `Services/ExceptionHandlerService.cs` (and the `Services/` folder if empty).
+- [x] 13.3 Remove `AddControllers` and `MapControllers` from `Program.cs` / extensions; replace the `ReferenceHandler.IgnoreCycles` JSON option with `ConfigureHttpJsonOptions` in a new `Extensions/JsonExtensions.cs`.
+- [x] 13.4 Strip validation `DataAnnotations` from every file in `Domain/Entities/`. Remove now-unused `using System.ComponentModel.DataAnnotations;`.
+- [x] 13.5 Update `CLAUDE.md` per the requirements above.
 - [ ] 13.6 Full-surface Manual Verification — every `/v1/` endpoint.
 
 ## Implementation Details

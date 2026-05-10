@@ -26,4 +26,4 @@
 
 ### Cleanup
 
-- [ ] 13.0 Cleanup & Documentation
+- [x] 13.0 Cleanup & Documentation

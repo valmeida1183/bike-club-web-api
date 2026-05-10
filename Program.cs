@@ -8,6 +8,7 @@ builder.ConfigureCors();
 builder.ConfigureDataContext();
 builder.ConfigureSwagger();
 builder.ConfigureOutputCache();
+builder.ConfigureJson();
 builder.ConfigureServices();
 builder.Services.AddEndpoints();
 builder.Services.AddHandlers();
@@ -31,7 +32,6 @@ app.UseResourceStaticFiles();
 app.UseDefaultCors();
 app.UseDefaultOutputCache();
 app.MapEndpoints();
-app.MapControllers();
 app.UseSwaggerUi();
 
 app.Run();
