@@ -28,7 +28,7 @@ public static class ResultExtensions
 
     private static IResult MapFailure(object body, Error error) => error.Type switch
     {
-        ErrorType.Validation => Microsoft.AspNetCore.Http.Results.BadRequest(body),
+        ErrorType.Validation => Microsoft.AspNetCore.Http.Results.UnprocessableEntity(body),
         ErrorType.NotFound => Microsoft.AspNetCore.Http.Results.NotFound(body),
         ErrorType.Conflict => Microsoft.AspNetCore.Http.Results.Conflict(body),
         ErrorType.Unauthorized => Microsoft.AspNetCore.Http.Results.Unauthorized(),
