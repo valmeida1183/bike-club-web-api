@@ -53,6 +53,7 @@ internal sealed class AddPurchaseToShopCartHandler
         await _db.SaveChangesAsync(ct);
 
         var shopCart = await _db.ShopCarts
+            .Include(sc => sc.Address)
             .Include(sc => sc.Purchases)
             .ThenInclude(p => p.Bike)
             .FirstOrDefaultAsync(sc => sc.Id == request.ShopCartId, ct);
